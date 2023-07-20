@@ -211,7 +211,7 @@ function unpack (messageValue) {
                 }
                 break
             case '0E':
-                packageLen = this.getInt(remainMessage.substring(8, 10)) * 2 + 10
+                packageLen = getInt(remainMessage.substring(8, 10)) * 2 + 10
                 if (remainMessage.length < packageLen) {
                     return frameArray
                 }
