@@ -1,6 +1,6 @@
 function Decoder (bytes, port) {
     const bytesString = bytes2HexString(bytes)
-        .toLocaleUpperCase()
+    const originMessage = bytesString.toLocaleUpperCase()
     const fport = parseInt(port)
     const decoded = {
         valid: true,
@@ -18,7 +18,7 @@ function Decoder (bytes, port) {
         return { data: decoded }
     }
 
-    let measurement = messageAnalyzed(bytesString)
+    let measurement = messageAnalyzed(originMessage)
     if (measurement.length === 0) {
         decoded.valid = false
         return { data: decoded }

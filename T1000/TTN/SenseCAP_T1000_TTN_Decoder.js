@@ -1,8 +1,9 @@
 function decodeUplink (input) {
-    var bytes = input['bytes']
-    var fport = parseInt(input['fPort'])
-    var bytesString = bytes2HexString(bytes).toLocaleUpperCase()
-    var decoded = {
+    const bytes = input['bytes']
+    const fport = parseInt(input['fPort'])
+    const bytesString = bytes2HexString(bytes)
+    const originMessage = bytesString.toLocaleUpperCase()
+    const decoded = {
         valid: true,
         err: 0,
         payload: bytesString,
@@ -16,7 +17,7 @@ function decodeUplink (input) {
         decoded.valid = false
         return { data: decoded }
     }
-    let measurement = messageAnalyzed(bytesString)
+    let measurement = messageAnalyzed(originMessage)
     if (measurement.length === 0) {
         decoded.valid = false
         return { data: decoded }
