@@ -210,7 +210,7 @@ function unpack (messageValue) {
                 }
                 break
             case '0E':
-                packageLen = this.getInt(remainMessage.substring(8, 10)) * 2 + 10
+                packageLen = getInt(remainMessage.substring(8, 10)) * 2 + 10
                 if (remainMessage.length < packageLen) {
                     return frameArray
                 }
@@ -277,28 +277,28 @@ function deserialize (dataId, dataValue) {
     switch (dataId) {
         case '01':
             measurementArray = getUpShortInfo(dataValue)
-            measurementArray.push(...this.getMotionSetting(dataValue.substring(30, 40)))
-            measurementArray.push(...this.getStaticSetting(dataValue.substring(40, 46)))
-            measurementArray.push(...this.getShockSetting(dataValue.substring(46, 52)))
-            measurementArray.push(...this.getTempSetting(dataValue.substring(52, 72)))
-            measurementArray.push(...this.getLightSetting(dataValue.substring(72, 92)))
+            measurementArray.push(...getMotionSetting(dataValue.substring(30, 40)))
+            measurementArray.push(...getStaticSetting(dataValue.substring(40, 46)))
+            measurementArray.push(...getShockSetting(dataValue.substring(46, 52)))
+            measurementArray.push(...getTempSetting(dataValue.substring(52, 72)))
+            measurementArray.push(...getLightSetting(dataValue.substring(72, 92)))
             break
         case '02':
             measurementArray = getUpShortInfo(dataValue)
             break
         case '03':
-            measurementArray.push(...this.getMotionSetting(dataValue.substring(0, 10)))
-            measurementArray.push(...this.getStaticSetting(dataValue.substring(10, 16)))
-            measurementArray.push(...this.getShockSetting(dataValue.substring(16, 22)))
-            measurementArray.push(...this.getTempSetting(dataValue.substring(22, 42)))
-            measurementArray.push(...this.getLightSetting(dataValue.substring(42, 62)))
+            measurementArray.push(...getMotionSetting(dataValue.substring(0, 10)))
+            measurementArray.push(...getStaticSetting(dataValue.substring(10, 16)))
+            measurementArray.push(...getShockSetting(dataValue.substring(16, 22)))
+            measurementArray.push(...getTempSetting(dataValue.substring(22, 42)))
+            measurementArray.push(...getLightSetting(dataValue.substring(42, 62)))
             break
         case '04':
             let interval = 0
-            let workMode = this.getInt(dataValue.substring(0, 2))
-            let heartbeatInterval = this.getSecondsByMin(dataValue.substring(4, 8))
-            let periodicInterval = this.getSecondsByMin(dataValue.substring(8, 12))
-            let eventInterval = this.getSecondsByMin(dataValue.substring(12, 16))
+            let workMode = getInt(dataValue.substring(0, 2))
+            let heartbeatInterval = getSecondsByMin(dataValue.substring(4, 8))
+            let periodicInterval = getSecondsByMin(dataValue.substring(8, 12))
+            let eventInterval = getSecondsByMin(dataValue.substring(12, 16))
             switch (workMode) {
                 case 0:
                     interval = heartbeatInterval
@@ -328,21 +328,21 @@ function deserialize (dataId, dataValue) {
             ]
             break
         case '06':
-            collectTime = this.getUTCTimestamp(dataValue.substring(8, 16))
+            collectTime = getUTCTimestamp(dataValue.substring(8, 16))
             measurementArray = [
-                {measurementId: '4200', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Event Status', measurementValue: this.getEventStatus(dataValue.substring(0, 6))},
-                {measurementId: '4197', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Longitude', measurementValue: getSensorValue(dataValue.substring(16, 24), 1000000)},
-                {measurementId: '4198', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Latitude', measurementValue: getSensorValue(dataValue.substring(24, 32), 1000000)},
+                {measurementId: '4200', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Event Status', measurementValue: getEventStatus(dataValue.substring(0, 6))},
+                {measurementId: '4197', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Longitude', measurementValue: parseFloat(getSensorValue(dataValue.substring(16, 24), 1000000))},
+                {measurementId: '4198', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Latitude', measurementValue: parseFloat(getSensorValue(dataValue.substring(24, 32), 1000000))},
                 {measurementId: '4097', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Air Temperature', measurementValue: getSensorValue(dataValue.substring(32, 36), 10)},
                 {measurementId: '4199', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Light', measurementValue: getSensorValue(dataValue.substring(36, 40))},
                 {measurementId: '3000', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Battery', measurementValue: getBattery(dataValue.substring(40, 42))}
             ]
             break
         case '07':
-            eventList = this.getEventStatus(dataValue.substring(0, 6))
-            collectTime = this.getUTCTimestamp(dataValue.substring(8, 16))
+            eventList = getEventStatus(dataValue.substring(0, 6))
+            collectTime = getUTCTimestamp(dataValue.substring(8, 16))
             measurementArray = [
-                {measurementId: '4200', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Event Status', measurementValue: this.getEventStatus(dataValue.substring(0, 6))},
+                {measurementId: '4200', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Event Status', measurementValue: getEventStatus(dataValue.substring(0, 6))},
                 {measurementId: '5001', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Wi-Fi Scan', measurementValue: getMacAndRssiObj(dataValue.substring(16, 72))},
                 {measurementId: '4097', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Air Temperature', measurementValue: getSensorValue(dataValue.substring(72, 76), 10)},
                 {measurementId: '4199', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Light', measurementValue: getSensorValue(dataValue.substring(76, 80))},
@@ -350,9 +350,9 @@ function deserialize (dataId, dataValue) {
             ]
             break
         case '08':
-            collectTime = this.getUTCTimestamp(dataValue.substring(8, 16))
+            collectTime = getUTCTimestamp(dataValue.substring(8, 16))
             measurementArray = [
-                {measurementId: '4200', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Event Status', measurementValue: this.getEventStatus(dataValue.substring(0, 6))},
+                {measurementId: '4200', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Event Status', measurementValue: getEventStatus(dataValue.substring(0, 6))},
                 {measurementId: '5002', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'BLE Scan', measurementValue: getMacAndRssiObj(dataValue.substring(16, 58))},
                 {measurementId: '4097', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Air Temperature', measurementValue: getSensorValue(dataValue.substring(58, 62), 10)},
                 {measurementId: '4199', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Light', measurementValue: getSensorValue(dataValue.substring(62, 66))},
@@ -360,32 +360,32 @@ function deserialize (dataId, dataValue) {
             ]
             break
         case '09':
-            collectTime = this.getUTCTimestamp(dataValue.substring(8, 16))
+            collectTime = getUTCTimestamp(dataValue.substring(8, 16))
             measurementArray = [
-                {measurementId: '4200', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Event Status', measurementValue: this.getEventStatus(dataValue.substring(0, 6))},
-                {measurementId: '4197', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Longitude', measurementValue: getSensorValue(dataValue.substring(16, 24), 1000000)},
-                {measurementId: '4198', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Latitude', measurementValue: getSensorValue(dataValue.substring(24, 32), 1000000)},
+                {measurementId: '4200', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Event Status', measurementValue: getEventStatus(dataValue.substring(0, 6))},
+                {measurementId: '4197', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Longitude', measurementValue: parseFloat(getSensorValue(dataValue.substring(16, 24), 1000000))},
+                {measurementId: '4198', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Latitude', measurementValue: parseFloat(getSensorValue(dataValue.substring(24, 32), 1000000))},
                 {measurementId: '3000', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Battery', measurementValue: getBattery(dataValue.substring(32, 34))}
             ]
             break
         case '0A':
-            collectTime = this.getUTCTimestamp(dataValue.substring(8, 16))
+            collectTime = getUTCTimestamp(dataValue.substring(8, 16))
             measurementArray = [
-                {measurementId: '4200', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Event Status', measurementValue: this.getEventStatus(dataValue.substring(0, 6))},
+                {measurementId: '4200', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Event Status', measurementValue: getEventStatus(dataValue.substring(0, 6))},
                 {measurementId: '5001', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Wi-Fi Scan', measurementValue: getMacAndRssiObj(dataValue.substring(16, 72))},
                 {measurementId: '3000', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Battery', measurementValue: getBattery(dataValue.substring(72, 74))}
             ]
             break
         case '0B':
-            collectTime = this.getUTCTimestamp(dataValue.substring(8, 16))
+            collectTime = getUTCTimestamp(dataValue.substring(8, 16))
             measurementArray = [
-                {measurementId: '4200', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Event Status', measurementValue: this.getEventStatus(dataValue.substring(0, 6))},
+                {measurementId: '4200', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Event Status', measurementValue: getEventStatus(dataValue.substring(0, 6))},
                 {measurementId: '5002', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'BLE Scan', measurementValue: getMacAndRssiObj(dataValue.substring(16, 58))},
                 {measurementId: '3000', timestamp: collectTime, motionId: getMotionId(dataValue.substring(6, 8)), type: 'Battery', measurementValue: getBattery(dataValue.substring(58, 60))},
             ]
             break
         case '0D':
-            let errorCode = this.getInt(dataValue)
+            let errorCode = getInt(dataValue)
             let error = ''
             switch (errorCode) {
                 case 1:
@@ -401,8 +401,8 @@ function deserialize (dataId, dataValue) {
             measurementArray.push({errorCode, error})
             break
         case '0E':
-            shardFlag = this.getShardFlag(dataValue.substring(0, 2))
-            groupId = this.getInt(dataValue.substring(2, 6))
+            shardFlag = getShardFlag(dataValue.substring(0, 2))
+            groupId = getInt(dataValue.substring(2, 6))
             payload = dataValue.substring(6)
             measurement = {
                 measurementId: '6152',
@@ -415,9 +415,9 @@ function deserialize (dataId, dataValue) {
             measurementArray.push(measurement)
             break
         case '0F':
-            collectTime = this.getUTCTimestamp(dataValue.substring(8, 16))
-            shardFlag = this.getShardFlag(dataValue.substring(26, 28))
-            groupId = this.getInt(dataValue.substring(28, 32))
+            collectTime = getUTCTimestamp(dataValue.substring(8, 16))
+            shardFlag = getShardFlag(dataValue.substring(26, 28))
+            groupId = getInt(dataValue.substring(28, 32))
             measurementArray.push({
                 measurementId: '4200',
                 timestamp: collectTime,
@@ -426,7 +426,7 @@ function deserialize (dataId, dataValue) {
                 index: shardFlag.index,
                 count: shardFlag.count,
                 type: 'Event Status',
-                measurementValue: this.getEventStatus(dataValue.substring(0, 6))
+                measurementValue: getEventStatus(dataValue.substring(0, 6))
             })
             measurementArray.push({
                 measurementId: '4097',
@@ -436,7 +436,7 @@ function deserialize (dataId, dataValue) {
                 index: shardFlag.index,
                 count: shardFlag.count,
                 type: 'Air Temperature',
-                measurementValue: '' + this.getSensorValue(dataValue.substring(16, 20), 10)
+                measurementValue: '' + getSensorValue(dataValue.substring(16, 20), 10)
             })
             measurementArray.push({
                 measurementId: '4199',
@@ -446,7 +446,7 @@ function deserialize (dataId, dataValue) {
                 index: shardFlag.index,
                 count: shardFlag.count,
                 type: 'Light',
-                measurementValue: '' + this.getSensorValue(dataValue.substring(20, 24))
+                measurementValue: '' + getSensorValue(dataValue.substring(20, 24))
             })
             measurementArray.push({
                 measurementId: '3000',
@@ -456,13 +456,13 @@ function deserialize (dataId, dataValue) {
                 index: shardFlag.index,
                 count: shardFlag.count,
                 type: 'Battery',
-                measurementValue: '' + this.getBattery(dataValue.substring(24, 26))
+                measurementValue: '' + getBattery(dataValue.substring(24, 26))
             })
             break
         case '10':
-            collectTime = this.getUTCTimestamp(dataValue.substring(8, 16))
-            shardFlag = this.getShardFlag(dataValue.substring(18, 20))
-            groupId = this.getInt(dataValue.substring(20, 24))
+            collectTime = getUTCTimestamp(dataValue.substring(8, 16))
+            shardFlag = getShardFlag(dataValue.substring(18, 20))
+            groupId = getInt(dataValue.substring(20, 24))
             measurementArray.push({
                 measurementId: '4200',
                 timestamp: collectTime,
@@ -471,7 +471,7 @@ function deserialize (dataId, dataValue) {
                 index: shardFlag.index,
                 count: shardFlag.count,
                 type: 'Event Status',
-                measurementValue: this.getEventStatus(dataValue.substring(0, 6))
+                measurementValue: getEventStatus(dataValue.substring(0, 6))
             })
             measurementArray.push({
                 measurementId: '3000',
@@ -481,44 +481,44 @@ function deserialize (dataId, dataValue) {
                 index: shardFlag.index,
                 count: shardFlag.count,
                 type: 'Battery',
-                measurementValue: '' + this.getBattery(dataValue.substring(16, 18))
+                measurementValue: '' + getBattery(dataValue.substring(16, 18))
             })
             break
         case '11':
-            collectTime = this.getUTCTimestamp(dataValue.substring(8, 16))
+            collectTime = getUTCTimestamp(dataValue.substring(8, 16))
             measurementArray.push({
                 measurementId: '3576',
                 timestamp: collectTime,
                 type: 'Positing Status',
-                measurementValue: '' + this.getPositingStatus(dataValue.substring(0, 2))
+                measurementValue: '' + getPositingStatus(dataValue.substring(0, 2))
             })
             measurementArray.push({
                 timestamp: collectTime,
                 measurementId: '4200',
                 type: 'Event Status',
-                measurementValue: this.getEventStatus(dataValue.substring(2, 8))
+                measurementValue: getEventStatus(dataValue.substring(2, 8))
             })
-            if (!isNaN(parseFloat(this.getSensorValue(dataValue.substring(16, 20), 10)))) {
+            if (!isNaN(parseFloat(getSensorValue(dataValue.substring(16, 20), 10)))) {
                 measurementArray.push({
                     timestamp: collectTime,
                     measurementId: '4097',
                     type: 'Air Temperature',
-                    measurementValue: '' + this.getSensorValue(dataValue.substring(16, 20), 10)
+                    measurementValue: '' + getSensorValue(dataValue.substring(16, 20), 10)
                 })
             }
-            if (!isNaN(parseFloat(this.getSensorValue(dataValue.substring(20, 24))))) {
+            if (!isNaN(parseFloat(getSensorValue(dataValue.substring(20, 24))))) {
                 measurementArray.push({
                     timestamp: collectTime,
                     measurementId: '4199',
                     type: 'Light',
-                    measurementValue: '' + this.getSensorValue(dataValue.substring(20, 24))
+                    measurementValue: '' + getSensorValue(dataValue.substring(20, 24))
                 })
             }
             measurementArray.push({
                 timestamp: collectTime,
                 measurementId: '3000',
                 type: 'Battery',
-                measurementValue: '' + this.getBattery(dataValue.substring(24, 26))
+                measurementValue: '' + getBattery(dataValue.substring(24, 26))
             })
             break
     }
@@ -526,11 +526,11 @@ function deserialize (dataId, dataValue) {
 }
 
 function getMotionId (str) {
-    return this.getInt(str)
+    return getInt(str)
 }
 
 function getPositingStatus (str) {
-    return this.getInt(str)
+    return getInt(str)
 }
 
 function getUpShortInfo (messageValue) {
@@ -552,7 +552,7 @@ function getUpShortInfo (messageValue) {
         }, {
             measurementId: '3944', type: 'Event Interval', measurementValue: getOneWeekInterval(messageValue.substring(22, 26))
         }, {
-            measurementId: '3945', type: 'Sensor Enable', measurementValue: this.getInt(messageValue.substring(26, 28))
+            measurementId: '3945', type: 'Sensor Enable', measurementValue: getInt(messageValue.substring(26, 28))
         }, {
             measurementId: '3941', type: 'SOS Mode', measurementValue: getSOSMode(messageValue.substring(28, 30))
         }
@@ -561,50 +561,50 @@ function getUpShortInfo (messageValue) {
 
 function getMotionSetting (str) {
     return [
-        {measurementId: '3946', type: 'Motion Enable', measurementValue: this.getInt(str.substring(0, 2))},
-        {measurementId: '3947', type: 'Any Motion Threshold', measurementValue: this.getSensorValue(str.substring(2, 6), 1)},
-        {measurementId: '3948', type: 'Motion Start Interval', measurementValue: this.getSecondsByMin(str.substring(6, 10))},
+        {measurementId: '3946', type: 'Motion Enable', measurementValue: getInt(str.substring(0, 2))},
+        {measurementId: '3947', type: 'Any Motion Threshold', measurementValue: getSensorValue(str.substring(2, 6), 1)},
+        {measurementId: '3948', type: 'Motion Start Interval', measurementValue: getSecondsByMin(str.substring(6, 10))},
     ]
 }
 
 function getStaticSetting (str) {
     return [
-        {measurementId: '3949', type: 'Static Enable', measurementValue: this.getInt(str.substring(0, 2))},
-        {measurementId: '3950', type: 'Device Static Timeout', measurementValue: this.getSecondsByMin(str.substring(2, 6))}
+        {measurementId: '3949', type: 'Static Enable', measurementValue: getInt(str.substring(0, 2))},
+        {measurementId: '3950', type: 'Device Static Timeout', measurementValue: getSecondsByMin(str.substring(2, 6))}
     ]
 }
 
 function getShockSetting (str) {
     return [
-        {measurementId: '3951', type: 'Shock Enable', measurementValue: this.getInt(str.substring(0, 2))},
-        {measurementId: '3952', type: 'Shock Threshold', measurementValue: this.getInt(str.substring(2, 6))}
+        {measurementId: '3951', type: 'Shock Enable', measurementValue: getInt(str.substring(0, 2))},
+        {measurementId: '3952', type: 'Shock Threshold', measurementValue: getInt(str.substring(2, 6))}
     ]
 }
 
 function getTempSetting (str) {
     return [
-        {measurementId: '3953', type: 'Temp Enable', measurementValue: this.getInt(str.substring(0, 2))},
-        {measurementId: '3954', type: 'Event Temp Interval', measurementValue: this.getSecondsByMin(str.substring(2, 6))},
-        {measurementId: '3955', type: 'Event Temp Sample Interval', measurementValue: this.getSecondsByInt(str.substring(6, 10))},
-        {measurementId: '3956', type: 'Temp ThMax', measurementValue: this.getSensorValue(str.substring(10, 14), 10)},
-        {measurementId: '3957', type: 'Temp ThMin', measurementValue: this.getSensorValue(str.substring(14, 18), 10)},
-        {measurementId: '3958', type: 'Temp Warning Type', measurementValue: this.getInt(str.substring(18, 20))}
+        {measurementId: '3953', type: 'Temp Enable', measurementValue: getInt(str.substring(0, 2))},
+        {measurementId: '3954', type: 'Event Temp Interval', measurementValue: getSecondsByMin(str.substring(2, 6))},
+        {measurementId: '3955', type: 'Event Temp Sample Interval', measurementValue: getSecondsByInt(str.substring(6, 10))},
+        {measurementId: '3956', type: 'Temp ThMax', measurementValue: getSensorValue(str.substring(10, 14), 10)},
+        {measurementId: '3957', type: 'Temp ThMin', measurementValue: getSensorValue(str.substring(14, 18), 10)},
+        {measurementId: '3958', type: 'Temp Warning Type', measurementValue: getInt(str.substring(18, 20))}
     ]
 }
 
 function getLightSetting (str) {
     return [
-        {measurementId: '3959', type: 'Light Enable', measurementValue: this.getInt(str.substring(0, 2))},
-        {measurementId: '3960', type: 'Event Light Interval', measurementValue: this.getSecondsByMin(str.substring(2, 6))},
-        {measurementId: '3961', type: 'Event Light Sample Interval', measurementValue: this.getSecondsByInt(str.substring(6, 10))},
-        {measurementId: '3962', type: 'Light ThMax', measurementValue: this.getSensorValue(str.substring(10, 14), 10)},
-        {measurementId: '3963', type: 'Light ThMin', measurementValue: this.getSensorValue(str.substring(14, 18), 10)},
-        {measurementId: '3964', type: 'Light Warning Type', measurementValue: this.getInt(str.substring(18, 20))}
+        {measurementId: '3959', type: 'Light Enable', measurementValue: getInt(str.substring(0, 2))},
+        {measurementId: '3960', type: 'Event Light Interval', measurementValue: getSecondsByMin(str.substring(2, 6))},
+        {measurementId: '3961', type: 'Event Light Sample Interval', measurementValue: getSecondsByInt(str.substring(6, 10))},
+        {measurementId: '3962', type: 'Light ThMax', measurementValue: getSensorValue(str.substring(10, 14), 10)},
+        {measurementId: '3963', type: 'Light ThMin', measurementValue: getSensorValue(str.substring(14, 18), 10)},
+        {measurementId: '3964', type: 'Light Warning Type', measurementValue: getInt(str.substring(18, 20))}
     ]
 }
 
 function getShardFlag (str) {
-    let bitStr = this.getByteArray(str)
+    let bitStr = getByteArray(str)
     return {
         count: parseInt(bitStr.substring(0, 4), 2),
         index: parseInt(bitStr.substring(4), 2)
@@ -622,11 +622,11 @@ function getHardVersion (hardVersion) {
 }
 
 function getSecondsByInt (str) {
-    return this.getInt(str)
+    return getInt(str)
 }
 
 function getSecondsByMin (str) {
-    return this.getInt(str) * 60
+    return getInt(str) * 60
 }
 
 function getOneWeekInterval (str) {
@@ -739,7 +739,7 @@ function getMacAddress (str) {
 }
 
 function getInt8RSSI (str) {
-    return this.loraWANV2DataFormat(str)
+    return loraWANV2DataFormat(str)
 }
 
 function getInt (str) {
@@ -777,11 +777,11 @@ function getPositioningStrategy (strategy) {
 }
 
 function getUTCTimestamp(str){
-    return parseInt(this.loraWANV2PositiveDataFormat(str)) * 1000
+    return parseInt(loraWANV2PositiveDataFormat(str)) * 1000
 }
 
 function loraWANV2PositiveDataFormat (str, divisor = 1) {
-    let strReverse = this.bigEndianTransform(str)
-    let str2 = this.toBinary(strReverse)
+    let strReverse = bigEndianTransform(str)
+    let str2 = toBinary(strReverse)
     return parseInt(str2, 2) / divisor
 }
