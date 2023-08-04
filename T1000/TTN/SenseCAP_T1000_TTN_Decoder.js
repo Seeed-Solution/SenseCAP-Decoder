@@ -296,9 +296,9 @@ function deserialize (dataId, dataValue) {
         case '04':
             let interval = 0
             let workMode = getInt(dataValue.substring(0, 2))
-            let heartbeatInterval = getSecondsByMin(dataValue.substring(4, 8))
-            let periodicInterval = getSecondsByMin(dataValue.substring(8, 12))
-            let eventInterval = getSecondsByMin(dataValue.substring(12, 16))
+            let heartbeatInterval = getMinsByMin(dataValue.substring(4, 8))
+            let periodicInterval = getMinsByMin(dataValue.substring(8, 12))
+            let eventInterval = getMinsByMin(dataValue.substring(12, 16))
             switch (workMode) {
                 case 0:
                     interval = heartbeatInterval
@@ -546,11 +546,11 @@ function getUpShortInfo (messageValue) {
         }, {
             measurementId: '3965', type: 'Positioning Strategy', measurementValue: getPositioningStrategy(messageValue.substring(12, 14))
         }, {
-            measurementId: '3942', type: 'Heartbeat Interval', measurementValue: getOneWeekInterval(messageValue.substring(14, 18))
+            measurementId: '3942', type: 'Heartbeat Interval', measurementValue: getMinsByMin(messageValue.substring(14, 18))
         }, {
-            measurementId: '3943', type: 'Periodic Interval', measurementValue: getOneWeekInterval(messageValue.substring(18, 22))
+            measurementId: '3943', type: 'Periodic Interval', measurementValue: getMinsByMin(messageValue.substring(18, 22))
         }, {
-            measurementId: '3944', type: 'Event Interval', measurementValue: getOneWeekInterval(messageValue.substring(22, 26))
+            measurementId: '3944', type: 'Event Interval', measurementValue: getMinsByMin(messageValue.substring(22, 26))
         }, {
             measurementId: '3945', type: 'Sensor Enable', measurementValue: getInt(messageValue.substring(26, 28))
         }, {
@@ -563,14 +563,14 @@ function getMotionSetting (str) {
     return [
         {measurementId: '3946', type: 'Motion Enable', measurementValue: getInt(str.substring(0, 2))},
         {measurementId: '3947', type: 'Any Motion Threshold', measurementValue: getSensorValue(str.substring(2, 6), 1)},
-        {measurementId: '3948', type: 'Motion Start Interval', measurementValue: getSecondsByMin(str.substring(6, 10))},
+        {measurementId: '3948', type: 'Motion Start Interval', measurementValue: getMinsByMin(str.substring(6, 10))},
     ]
 }
 
 function getStaticSetting (str) {
     return [
         {measurementId: '3949', type: 'Static Enable', measurementValue: getInt(str.substring(0, 2))},
-        {measurementId: '3950', type: 'Device Static Timeout', measurementValue: getSecondsByMin(str.substring(2, 6))}
+        {measurementId: '3950', type: 'Device Static Timeout', measurementValue: getMinsByMin(str.substring(2, 6))}
     ]
 }
 
@@ -584,7 +584,7 @@ function getShockSetting (str) {
 function getTempSetting (str) {
     return [
         {measurementId: '3953', type: 'Temp Enable', measurementValue: getInt(str.substring(0, 2))},
-        {measurementId: '3954', type: 'Event Temp Interval', measurementValue: getSecondsByMin(str.substring(2, 6))},
+        {measurementId: '3954', type: 'Event Temp Interval', measurementValue: getMinsByMin(str.substring(2, 6))},
         {measurementId: '3955', type: 'Event Temp Sample Interval', measurementValue: getSecondsByInt(str.substring(6, 10))},
         {measurementId: '3956', type: 'Temp ThMax', measurementValue: getSensorValue(str.substring(10, 14), 10)},
         {measurementId: '3957', type: 'Temp ThMin', measurementValue: getSensorValue(str.substring(14, 18), 10)},
@@ -595,7 +595,7 @@ function getTempSetting (str) {
 function getLightSetting (str) {
     return [
         {measurementId: '3959', type: 'Light Enable', measurementValue: getInt(str.substring(0, 2))},
-        {measurementId: '3960', type: 'Event Light Interval', measurementValue: getSecondsByMin(str.substring(2, 6))},
+        {measurementId: '3960', type: 'Event Light Interval', measurementValue: getMinsByMin(str.substring(2, 6))},
         {measurementId: '3961', type: 'Event Light Sample Interval', measurementValue: getSecondsByInt(str.substring(6, 10))},
         {measurementId: '3962', type: 'Light ThMax', measurementValue: getSensorValue(str.substring(10, 14), 10)},
         {measurementId: '3963', type: 'Light ThMin', measurementValue: getSensorValue(str.substring(14, 18), 10)},
@@ -625,13 +625,10 @@ function getSecondsByInt (str) {
     return getInt(str)
 }
 
-function getSecondsByMin (str) {
-    return getInt(str) * 60
+function getMinsByMin (str) {
+    return getInt(str)
 }
 
-function getOneWeekInterval (str) {
-    return loraWANV2DataFormat(str) * 60
-}
 function getSensorValue (str, dig) {
     if (str === '8000') {
         return null

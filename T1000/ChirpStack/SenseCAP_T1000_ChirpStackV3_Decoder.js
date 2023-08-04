@@ -341,9 +341,9 @@ function deserialize(dataId, dataValue) {
         case '04':
             var interval = 0;
             var workMode = getInt(dataValue.substring(0, 2));
-            var heartbeatInterval = getSecondsByMin(dataValue.substring(4, 8));
-            var periodicInterval = getSecondsByMin(dataValue.substring(8, 12));
-            var eventInterval = getSecondsByMin(dataValue.substring(12, 16));
+            var heartbeatInterval = getMinsByMin(dataValue.substring(4, 8));
+            var periodicInterval = getMinsByMin(dataValue.substring(8, 12));
+            var eventInterval = getMinsByMin(dataValue.substring(12, 16));
             switch (workMode) {
                 case 0:
                     interval = heartbeatInterval;
@@ -733,6 +733,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 
+
 function getMotionId(str) {
     return getInt(str);
 }
@@ -763,15 +764,15 @@ function getUpShortInfo(messageValue) {
     }, {
         measurementId: '3942',
         type: 'Heartbeat Interval',
-        measurementValue: getOneWeekInterval(messageValue.substring(14, 18))
+        measurementValue: getMinsByMin(messageValue.substring(14, 18))
     }, {
         measurementId: '3943',
         type: 'Periodic Interval',
-        measurementValue: getOneWeekInterval(messageValue.substring(18, 22))
+        measurementValue: getMinsByMin(messageValue.substring(18, 22))
     }, {
         measurementId: '3944',
         type: 'Event Interval',
-        measurementValue: getOneWeekInterval(messageValue.substring(22, 26))
+        measurementValue: getMinsByMin(messageValue.substring(22, 26))
     }, {
         measurementId: '3945',
         type: 'Sensor Enable',
@@ -794,7 +795,7 @@ function getMotionSetting(str) {
     }, {
         measurementId: '3948',
         type: 'Motion Start Interval',
-        measurementValue: getSecondsByMin(str.substring(6, 10))
+        measurementValue: getMinsByMin(str.substring(6, 10))
     }];
 }
 function getStaticSetting(str) {
@@ -805,7 +806,7 @@ function getStaticSetting(str) {
     }, {
         measurementId: '3950',
         type: 'Device Static Timeout',
-        measurementValue: getSecondsByMin(str.substring(2, 6))
+        measurementValue: getMinsByMin(str.substring(2, 6))
     }];
 }
 function getShockSetting(str) {
@@ -827,7 +828,7 @@ function getTempSetting(str) {
     }, {
         measurementId: '3954',
         type: 'Event Temp Interval',
-        measurementValue: getSecondsByMin(str.substring(2, 6))
+        measurementValue: getMinsByMin(str.substring(2, 6))
     }, {
         measurementId: '3955',
         type: 'Event Temp Sample Interval',
@@ -854,7 +855,7 @@ function getLightSetting(str) {
     }, {
         measurementId: '3960',
         type: 'Event Light Interval',
-        measurementValue: getSecondsByMin(str.substring(2, 6))
+        measurementValue: getMinsByMin(str.substring(2, 6))
     }, {
         measurementId: '3961',
         type: 'Event Light Sample Interval',
@@ -892,11 +893,8 @@ function getHardVersion(hardVersion) {
 function getSecondsByInt(str) {
     return getInt(str);
 }
-function getSecondsByMin(str) {
-    return getInt(str) * 60;
-}
-function getOneWeekInterval(str) {
-    return loraWANV2DataFormat(str) * 60;
+function getMinsByMin(str) {
+    return getInt(str);
 }
 function getSensorValue(str, dig) {
     if (str === '8000') {
