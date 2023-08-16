@@ -744,17 +744,46 @@ function getInt (str) {
 }
 
 function getEventStatus (str) {
-    return getInt(str)
-    // let bitStr = this.getByteArray(str)
-    // let event = []
-    // for (let i = bitStr.length; i >= 0; i--) {
-    //     if (i === 0) {
-    //         event[i] = bitStr.substring(0)
-    //     } else {
-    //         event[i] = bitStr.substring(i - 1, i)
-    //     }
-    // }
-    // return event.reverse()
+    // return getInt(str)
+    let bitStr = getByteArray(str)
+    let bitArr = []
+    for (let i = 0; i < bitStr.length; i++) {
+        bitArr[i] = bitStr.substring(i, i + 1)
+    }
+    bitArr = bitArr.reverse()
+    let event = []
+    for (let i = 0; i < bitArr.length; i++) {
+        if (bitArr[i] !== '1') {
+            continue
+        }
+        switch (i){
+            case 0:
+                event.push({id:1, eventName:"Start moving event."})
+                break
+            case 1:
+                event.push({id:2, eventName:"End movement event."})
+                break
+            case 2:
+                event.push({id:3, eventName:"Motionless event."})
+                break
+            case 3:
+                event.push({id:4, eventName:"Shock event."})
+                break
+            case 4:
+                event.push({id:5, eventName:"Temperature event."})
+                break
+            case 5:
+                event.push({id:6, eventName:"Light event."})
+                break
+            case 6:
+                event.push({id:7, eventName:"SOS event."})
+                break
+            case 7:
+                event.push({id:8, eventName:"Press once event."})
+                break
+        }
+    }
+    return event
 }
 
 function getByteArray (str) {
