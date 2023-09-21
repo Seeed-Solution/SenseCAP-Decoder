@@ -490,8 +490,8 @@ function deserialize (dataId, dataValue) {
             measurementArray.push({
                 measurementId: '3576',
                 timestamp: collectTime,
-                type: 'Positing Status',
-                measurementValue: '' + getPositingStatus(dataValue.substring(0, 2))
+                type: 'Positioning Status',
+                measurementValue: getPositingStatus(dataValue.substring(0, 2))
             })
             measurementArray.push({
                 timestamp: collectTime,
@@ -531,6 +531,39 @@ function getMotionId (str) {
 }
 
 function getPositingStatus (str) {
+    let status = getInt(str)
+    switch (status) {
+        case 0:
+            return {id:status, statusName:"Positioning successful."}
+        case 1:
+            return {id:status, statusName:"The GNSS scan timed out and failed to obtain the location."}
+        case 2:
+            return {id:status, statusName:"The Wi-Fi scan timed out and failed to obtain the location."}
+        case 3:
+            return {id:status, statusName:"The Wi-Fi + GNSS scan timed out and failed to obtain the location."}
+        case 4:
+            return {id:status, statusName:"The GNSS + Wi-Fi scan timed out and failed to obtain the location."}
+        case 5:
+            return {id:status, statusName:"The Bluetooth scan timed out and failed to obtain the location."}
+        case 6:
+            return {id:status, statusName:"The Bluetooth + Wi-Fi scan timed out and failed to obtain the location."}
+        case 7:
+            return {id:status, statusName:"The Bluetooth + GNSS scan timed out and failed to obtain the location."}
+        case 8:
+            return {id:status, statusName:"The Bluetooth + Wi-Fi + GNSS scan timed out and failed to obtain the location."}
+        case 9:
+            return {id:status, statusName:"Location Server failed to parse the GNSS location."}
+        case 10:
+            return {id:status, statusName:"Location Server failed to parse the Wi-Fi location."}
+        case 11:
+            return {id:status, statusName:"Location Server failed to parse the Bluetooth location."}
+        case 12:
+            return {id:status, statusName:"Failed to parse the GNSS location due to the poor accuracy."}
+        case 13:
+            return {id:status, statusName:"Time synchronization failed."}
+        case 14:
+            return {id:status, statusName:"Failed to obtain location due to the old Almanac."}
+    }
     return getInt(str)
 }
 

@@ -689,8 +689,8 @@ function deserialize(dataId, dataValue) {
             measurementArray.push({
                 measurementId: '3576',
                 timestamp: collectTime,
-                type: 'Positing Status',
-                measurementValue: '' + getPositingStatus(dataValue.substring(0, 2))
+                type: 'Positioning Status',
+                measurementValue: getPositingStatus(dataValue.substring(0, 2))
             });
             measurementArray.push({
                 timestamp: collectTime,
@@ -724,20 +724,94 @@ function deserialize(dataId, dataValue) {
     }
     return measurementArray;
 }
-
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-
-
 function getMotionId(str) {
     return getInt(str);
 }
 function getPositingStatus(str) {
+    var status = getInt(str);
+    switch (status) {
+        case 0:
+            return {
+                id: status,
+                statusName: "Positioning successful."
+            };
+        case 1:
+            return {
+                id: status,
+                statusName: "The GNSS scan timed out and failed to obtain the location."
+            };
+        case 2:
+            return {
+                id: status,
+                statusName: "The Wi-Fi scan timed out and failed to obtain the location."
+            };
+        case 3:
+            return {
+                id: status,
+                statusName: "The Wi-Fi + GNSS scan timed out and failed to obtain the location."
+            };
+        case 4:
+            return {
+                id: status,
+                statusName: "The GNSS + Wi-Fi scan timed out and failed to obtain the location."
+            };
+        case 5:
+            return {
+                id: status,
+                statusName: "The Bluetooth scan timed out and failed to obtain the location."
+            };
+        case 6:
+            return {
+                id: status,
+                statusName: "The Bluetooth + Wi-Fi scan timed out and failed to obtain the location."
+            };
+        case 7:
+            return {
+                id: status,
+                statusName: "The Bluetooth + GNSS scan timed out and failed to obtain the location."
+            };
+        case 8:
+            return {
+                id: status,
+                statusName: "The Bluetooth + Wi-Fi + GNSS scan timed out and failed to obtain the location."
+            };
+        case 9:
+            return {
+                id: status,
+                statusName: "Location Server failed to parse the GNSS location."
+            };
+        case 10:
+            return {
+                id: status,
+                statusName: "Location Server failed to parse the Wi-Fi location."
+            };
+        case 11:
+            return {
+                id: status,
+                statusName: "Location Server failed to parse the Bluetooth location."
+            };
+        case 12:
+            return {
+                id: status,
+                statusName: "Failed to parse the GNSS location due to the poor accuracy."
+            };
+        case 13:
+            return {
+                id: status,
+                statusName: "Time synchronization failed."
+            };
+        case 14:
+            return {
+                id: status,
+                statusName: "Failed to obtain location due to the old Almanac."
+            };
+    }
     return getInt(str);
 }
 function getUpShortInfo(messageValue) {
