@@ -1,3 +1,6 @@
+// Added Longitude/ Latitude in decoded_payload in order to use ttnmapper.org
+// 03.10.2023 / steffen@grau-zone.online
+
 function decodeUplink (input) {
     const bytes = input['bytes']
     const fport = parseInt(input['fPort'])
