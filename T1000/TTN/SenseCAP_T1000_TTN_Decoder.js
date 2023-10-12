@@ -37,7 +37,9 @@ function decodeUplink (input) {
             }
         }
         if (elements.length > 0) {
-            decoded.messages.push(elements)
+                elements.push(element);
+                if (element.measurementId === "4197") { decoded.longitude = element.measurementValue };
+                if (element.measurementId === "4198") { decoded.latitude = element.measurementValue }
         }
     }
     // decoded.messages = measurement
