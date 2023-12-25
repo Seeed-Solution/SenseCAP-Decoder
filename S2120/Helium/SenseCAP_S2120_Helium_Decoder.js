@@ -497,7 +497,7 @@ function Decoder (bytes, port) {
         }
       })
       str2 = parseInt(reverseArr.join(''), 2) + 1
-      return '-' + str2 / divisor
+      return parseFloat('-' + str2 / divisor)
     }
     return parseInt(str2, 2) / divisor
   }
