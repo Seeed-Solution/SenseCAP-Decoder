@@ -101,150 +101,98 @@ function unpack(messageValue) {
         var packageLen = void 0;
         switch (dataId) {
             case '01':
-                packageLen = 94;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
-                dataValue = remainMessage.substring(2, packageLen);
-                messageValue = remainMessage.substring(packageLen);
+                dataValue = remainMessage.substring(2, 94);
+                messageValue = remainMessage.substring(94);
                 dataObj = {
                     'dataId': dataId,
                     'dataValue': dataValue
                 };
                 break;
             case '02':
-                packageLen = 32;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
-                dataValue = remainMessage.substring(2, packageLen);
-                messageValue = remainMessage.substring(packageLen);
+                dataValue = remainMessage.substring(2, 32);
+                messageValue = remainMessage.substring(32);
                 dataObj = {
                     'dataId': dataId,
                     'dataValue': dataValue
                 };
                 break;
             case '03':
-                packageLen = 64;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
-                dataValue = remainMessage.substring(2, packageLen);
-                messageValue = remainMessage.substring(packageLen);
+                dataValue = remainMessage.substring(2, 64);
+                messageValue = remainMessage.substring(64);
                 dataObj = {
                     'dataId': dataId,
                     'dataValue': dataValue
                 };
                 break;
             case '04':
-                packageLen = 20;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
-                dataValue = remainMessage.substring(2, packageLen);
-                messageValue = remainMessage.substring(packageLen);
+                dataValue = remainMessage.substring(2, 20);
+                messageValue = remainMessage.substring(20);
                 dataObj = {
                     'dataId': dataId,
                     'dataValue': dataValue
                 };
                 break;
             case '05':
-                packageLen = 10;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
-                dataValue = remainMessage.substring(2, packageLen);
-                messageValue = remainMessage.substring(packageLen);
+                dataValue = remainMessage.substring(2, 10);
+                messageValue = remainMessage.substring(10);
                 dataObj = {
                     'dataId': dataId,
                     'dataValue': dataValue
                 };
                 break;
             case '06':
-                packageLen = 44;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
-                dataValue = remainMessage.substring(2, packageLen);
-                messageValue = remainMessage.substring(packageLen);
+                dataValue = remainMessage.substring(2, 44);
+                messageValue = remainMessage.substring(44);
                 dataObj = {
                     'dataId': dataId,
                     'dataValue': dataValue
                 };
                 break;
             case '07':
-                packageLen = 84;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
-                dataValue = remainMessage.substring(2, packageLen);
-                messageValue = remainMessage.substring(packageLen);
+                dataValue = remainMessage.substring(2, 84);
+                messageValue = remainMessage.substring(84);
                 dataObj = {
                     'dataId': dataId,
                     'dataValue': dataValue
                 };
                 break;
             case '08':
-                packageLen = 70;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
-                dataValue = remainMessage.substring(2, packageLen);
-                messageValue = remainMessage.substring(packageLen);
+                dataValue = remainMessage.substring(2, 70);
+                messageValue = remainMessage.substring(70);
                 dataObj = {
                     'dataId': dataId,
                     'dataValue': dataValue
                 };
                 break;
             case '09':
-                packageLen = 36;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
-                dataValue = remainMessage.substring(2, packageLen);
-                messageValue = remainMessage.substring(packageLen);
+                dataValue = remainMessage.substring(2, 36);
+                messageValue = remainMessage.substring(36);
                 dataObj = {
                     'dataId': dataId,
                     'dataValue': dataValue
                 };
                 break;
             case '0A':
-                packageLen = 76;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
-                dataValue = remainMessage.substring(2, packageLen);
-                messageValue = remainMessage.substring(packageLen);
+                dataValue = remainMessage.substring(2, 76);
+                messageValue = remainMessage.substring(76);
                 dataObj = {
                     'dataId': dataId,
                     'dataValue': dataValue
                 };
                 break;
             case '0B':
-                packageLen = 62;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
-                dataValue = remainMessage.substring(2, packageLen);
-                messageValue = remainMessage.substring(packageLen);
+                dataValue = remainMessage.substring(2, 62);
+                messageValue = remainMessage.substring(62);
                 dataObj = {
                     'dataId': dataId,
                     'dataValue': dataValue
                 };
                 break;
             case '0C':
-                packageLen = 2;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
                 break;
             case '0D':
-                packageLen = 10;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
-                dataValue = remainMessage.substring(2, packageLen);
-                messageValue = remainMessage.substring(packageLen);
+                dataValue = remainMessage.substring(2, 10);
+                messageValue = remainMessage.substring(10);
                 dataObj = {
                     'dataId': dataId,
                     'dataValue': dataValue
@@ -252,9 +200,6 @@ function unpack(messageValue) {
                 break;
             case '0E':
                 packageLen = getInt(remainMessage.substring(8, 10)) * 2 + 10;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
                 dataValue = remainMessage.substring(2, 8) + remainMessage.substring(10, packageLen);
                 messageValue = remainMessage.substring(packageLen);
                 dataObj = {
@@ -263,36 +208,56 @@ function unpack(messageValue) {
                 };
                 break;
             case '0F':
-                packageLen = 34;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
-                dataValue = remainMessage.substring(2, packageLen);
-                messageValue = remainMessage.substring(packageLen);
+                dataValue = remainMessage.substring(2, 34);
+                messageValue = remainMessage.substring(34);
                 dataObj = {
                     'dataId': dataId,
                     'dataValue': dataValue
                 };
                 break;
             case '10':
-                packageLen = 26;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
-                dataValue = remainMessage.substring(2, packageLen);
-                messageValue = remainMessage.substring(packageLen);
+                dataValue = remainMessage.substring(2, 26);
+                messageValue = remainMessage.substring(26);
                 dataObj = {
                     'dataId': dataId,
                     'dataValue': dataValue
                 };
                 break;
             case '11':
-                packageLen = 28;
-                if (remainMessage.length < packageLen) {
-                    return frameArray;
-                }
-                dataValue = remainMessage.substring(2, packageLen);
-                messageValue = remainMessage.substring(packageLen);
+                dataValue = remainMessage.substring(2, 28);
+                messageValue = remainMessage.substring(28);
+                dataObj = {
+                    'dataId': dataId,
+                    'dataValue': dataValue
+                };
+                break;
+            case '1A':
+                dataValue = remainMessage.substring(2, 56);
+                messageValue = remainMessage.substring(56);
+                dataObj = {
+                    'dataId': dataId,
+                    'dataValue': dataValue
+                };
+                break;
+            case '1B':
+                dataValue = remainMessage.substring(2, 96);
+                messageValue = remainMessage.substring(96);
+                dataObj = {
+                    'dataId': dataId,
+                    'dataValue': dataValue
+                };
+                break;
+            case '1C':
+                dataValue = remainMessage.substring(2, 82);
+                messageValue = remainMessage.substring(82);
+                dataObj = {
+                    'dataId': dataId,
+                    'dataValue': dataValue
+                };
+                break;
+            case '1D':
+                dataValue = remainMessage.substring(2, 40);
+                messageValue = remainMessage.substring(40);
                 dataObj = {
                     'dataId': dataId,
                     'dataValue': dataValue
@@ -317,8 +282,7 @@ function deserialize(dataId, dataValue) {
     var groupId = 0;
     var shardFlag = {};
     var payload = '';
-    var result = [];
-    var dataArr = [];
+    var motionId = '';
     switch (dataId) {
         case '01':
             measurementArray = getUpShortInfo(dataValue);
@@ -402,40 +366,41 @@ function deserialize(dataId, dataValue) {
             break;
         case '06':
             collectTime = getUTCTimestamp(dataValue.substring(8, 16));
+            motionId = getMotionId(dataValue.substring(6, 8));
             measurementArray = [{
                 measurementId: '4200',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Event Status',
                 measurementValue: getEventStatus(dataValue.substring(0, 6))
             }, {
                 measurementId: '4197',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Longitude',
                 measurementValue: parseFloat(getSensorValue(dataValue.substring(16, 24), 1000000))
             }, {
                 measurementId: '4198',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Latitude',
                 measurementValue: parseFloat(getSensorValue(dataValue.substring(24, 32), 1000000))
             }, {
                 measurementId: '4097',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Air Temperature',
                 measurementValue: getSensorValue(dataValue.substring(32, 36), 10)
             }, {
                 measurementId: '4199',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Light',
                 measurementValue: getSensorValue(dataValue.substring(36, 40))
             }, {
                 measurementId: '3000',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Battery',
                 measurementValue: getBattery(dataValue.substring(40, 42))
             }];
@@ -443,140 +408,145 @@ function deserialize(dataId, dataValue) {
         case '07':
             eventList = getEventStatus(dataValue.substring(0, 6));
             collectTime = getUTCTimestamp(dataValue.substring(8, 16));
+            motionId = getMotionId(dataValue.substring(6, 8));
             measurementArray = [{
                 measurementId: '4200',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Event Status',
                 measurementValue: getEventStatus(dataValue.substring(0, 6))
             }, {
                 measurementId: '5001',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Wi-Fi Scan',
                 measurementValue: getMacAndRssiObj(dataValue.substring(16, 72))
             }, {
                 measurementId: '4097',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Air Temperature',
                 measurementValue: getSensorValue(dataValue.substring(72, 76), 10)
             }, {
                 measurementId: '4199',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Light',
                 measurementValue: getSensorValue(dataValue.substring(76, 80))
             }, {
                 measurementId: '3000',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Battery',
                 measurementValue: getBattery(dataValue.substring(80, 82))
             }];
             break;
         case '08':
             collectTime = getUTCTimestamp(dataValue.substring(8, 16));
+            motionId = getMotionId(dataValue.substring(6, 8));
             measurementArray = [{
                 measurementId: '4200',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Event Status',
                 measurementValue: getEventStatus(dataValue.substring(0, 6))
             }, {
                 measurementId: '5002',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'BLE Scan',
                 measurementValue: getMacAndRssiObj(dataValue.substring(16, 58))
             }, {
                 measurementId: '4097',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Air Temperature',
                 measurementValue: getSensorValue(dataValue.substring(58, 62), 10)
             }, {
                 measurementId: '4199',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Light',
                 measurementValue: getSensorValue(dataValue.substring(62, 66))
             }, {
                 measurementId: '3000',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Battery',
                 measurementValue: getBattery(dataValue.substring(66, 68))
             }];
             break;
         case '09':
             collectTime = getUTCTimestamp(dataValue.substring(8, 16));
+            motionId = getMotionId(dataValue.substring(6, 8));
             measurementArray = [{
                 measurementId: '4200',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Event Status',
                 measurementValue: getEventStatus(dataValue.substring(0, 6))
             }, {
                 measurementId: '4197',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Longitude',
                 measurementValue: parseFloat(getSensorValue(dataValue.substring(16, 24), 1000000))
             }, {
                 measurementId: '4198',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Latitude',
                 measurementValue: parseFloat(getSensorValue(dataValue.substring(24, 32), 1000000))
             }, {
                 measurementId: '3000',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Battery',
                 measurementValue: getBattery(dataValue.substring(32, 34))
             }];
             break;
         case '0A':
             collectTime = getUTCTimestamp(dataValue.substring(8, 16));
+            motionId = getMotionId(dataValue.substring(6, 8));
             measurementArray = [{
                 measurementId: '4200',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Event Status',
                 measurementValue: getEventStatus(dataValue.substring(0, 6))
             }, {
                 measurementId: '5001',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Wi-Fi Scan',
                 measurementValue: getMacAndRssiObj(dataValue.substring(16, 72))
             }, {
                 measurementId: '3000',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Battery',
                 measurementValue: getBattery(dataValue.substring(72, 74))
             }];
             break;
         case '0B':
             collectTime = getUTCTimestamp(dataValue.substring(8, 16));
+            motionId = getMotionId(dataValue.substring(6, 8));
             measurementArray = [{
                 measurementId: '4200',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Event Status',
                 measurementValue: getEventStatus(dataValue.substring(0, 6))
             }, {
                 measurementId: '5002',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'BLE Scan',
                 measurementValue: getMacAndRssiObj(dataValue.substring(16, 58))
             }, {
                 measurementId: '3000',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 type: 'Battery',
                 measurementValue: getBattery(dataValue.substring(58, 60))
             }];
@@ -618,10 +588,11 @@ function deserialize(dataId, dataValue) {
             collectTime = getUTCTimestamp(dataValue.substring(8, 16));
             shardFlag = getShardFlag(dataValue.substring(26, 28));
             groupId = getInt(dataValue.substring(28, 32));
+            motionId = getMotionId(dataValue.substring(6, 8));
             measurementArray.push({
                 measurementId: '4200',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 groupId: groupId,
                 index: shardFlag.index,
                 count: shardFlag.count,
@@ -631,42 +602,43 @@ function deserialize(dataId, dataValue) {
             measurementArray.push({
                 measurementId: '4097',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 groupId: groupId,
                 index: shardFlag.index,
                 count: shardFlag.count,
                 type: 'Air Temperature',
-                measurementValue: '' + getSensorValue(dataValue.substring(16, 20), 10)
+                measurementValue: getSensorValue(dataValue.substring(16, 20), 10)
             });
             measurementArray.push({
                 measurementId: '4199',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 groupId: groupId,
                 index: shardFlag.index,
                 count: shardFlag.count,
                 type: 'Light',
-                measurementValue: '' + getSensorValue(dataValue.substring(20, 24))
+                measurementValue: getSensorValue(dataValue.substring(20, 24))
             });
             measurementArray.push({
                 measurementId: '3000',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 groupId: groupId,
                 index: shardFlag.index,
                 count: shardFlag.count,
                 type: 'Battery',
-                measurementValue: '' + getBattery(dataValue.substring(24, 26))
+                measurementValue: getBattery(dataValue.substring(24, 26))
             });
             break;
         case '10':
             collectTime = getUTCTimestamp(dataValue.substring(8, 16));
             shardFlag = getShardFlag(dataValue.substring(18, 20));
             groupId = getInt(dataValue.substring(20, 24));
+            motionId = getMotionId(dataValue.substring(6, 8));
             measurementArray.push({
                 measurementId: '4200',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 groupId: groupId,
                 index: shardFlag.index,
                 count: shardFlag.count,
@@ -676,12 +648,12 @@ function deserialize(dataId, dataValue) {
             measurementArray.push({
                 measurementId: '3000',
                 timestamp: collectTime,
-                motionId: getMotionId(dataValue.substring(6, 8)),
+                motionId: motionId,
                 groupId: groupId,
                 index: shardFlag.index,
                 count: shardFlag.count,
                 type: 'Battery',
-                measurementValue: '' + getBattery(dataValue.substring(16, 18))
+                measurementValue: getBattery(dataValue.substring(16, 18))
             });
             break;
         case '11':
@@ -703,7 +675,7 @@ function deserialize(dataId, dataValue) {
                     timestamp: collectTime,
                     measurementId: '4097',
                     type: 'Air Temperature',
-                    measurementValue: '' + getSensorValue(dataValue.substring(16, 20), 10)
+                    measurementValue: getSensorValue(dataValue.substring(16, 20), 10)
                 });
             }
             if (!isNaN(parseFloat(getSensorValue(dataValue.substring(20, 24))))) {
@@ -711,25 +683,253 @@ function deserialize(dataId, dataValue) {
                     timestamp: collectTime,
                     measurementId: '4199',
                     type: 'Light',
-                    measurementValue: '' + getSensorValue(dataValue.substring(20, 24))
+                    measurementValue: getSensorValue(dataValue.substring(20, 24))
                 });
             }
             measurementArray.push({
                 timestamp: collectTime,
                 measurementId: '3000',
                 type: 'Battery',
-                measurementValue: '' + getBattery(dataValue.substring(24, 26))
+                measurementValue: getBattery(dataValue.substring(24, 26))
+            });
+            break;
+        case '1A':
+            collectTime = getUTCTimestamp(dataValue.substring(8, 16));
+            motionId = getMotionId(dataValue.substring(6, 8));
+            measurementArray = [{
+                measurementId: '4200',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'Event Status',
+                measurementValue: getEventStatus(dataValue.substring(0, 6))
+            }, {
+                measurementId: '4197',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'Longitude',
+                measurementValue: parseFloat(getSensorValue(dataValue.substring(16, 24), 1000000))
+            }, {
+                measurementId: '4198',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'Latitude',
+                measurementValue: parseFloat(getSensorValue(dataValue.substring(24, 32), 1000000))
+            }, {
+                measurementId: '4097',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'Air Temperature',
+                measurementValue: getSensorValue(dataValue.substring(32, 36), 10)
+            }, {
+                measurementId: '4199',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'Light',
+                measurementValue: getSensorValue(dataValue.substring(36, 40))
+            }, {
+                measurementId: '4210',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'AccelerometerX',
+                measurementValue: getSensorValue(dataValue.substring(40, 44))
+            }, {
+                measurementId: '4211',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'AccelerometerY',
+                measurementValue: getSensorValue(dataValue.substring(44, 48))
+            }, {
+                measurementId: '4212',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'AccelerometerZ',
+                measurementValue: getSensorValue(dataValue.substring(48, 52))
+            }, {
+                measurementId: '3000',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'Battery',
+                measurementValue: getBattery(dataValue.substring(52, 54))
+            }];
+            break;
+        // WIFI定位数据+sensor+三轴+电量
+        case '1B':
+            collectTime = getUTCTimestamp(dataValue.substring(8, 16));
+            motionId = getMotionId(dataValue.substring(6, 8));
+            measurementArray = [{
+                measurementId: '4200',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'Event Status',
+                measurementValue: getEventStatus(dataValue.substring(0, 6))
+            }, {
+                measurementId: '5001',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'Wi-Fi Scan',
+                measurementValue: getMacAndRssiObj(dataValue.substring(16, 72))
+            }, {
+                measurementId: '4097',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'Air Temperature',
+                measurementValue: getSensorValue(dataValue.substring(72, 76), 10)
+            }, {
+                measurementId: '4199',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'Light',
+                measurementValue: getSensorValue(dataValue.substring(76, 80))
+            }, {
+                measurementId: '4210',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'AccelerometerX',
+                measurementValue: getSensorValue(dataValue.substring(80, 84))
+            }, {
+                measurementId: '4211',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'AccelerometerY',
+                measurementValue: getSensorValue(dataValue.substring(84, 88))
+            }, {
+                measurementId: '4212',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'AccelerometerZ',
+                measurementValue: getSensorValue(dataValue.substring(88, 92))
+            }, {
+                measurementId: '3000',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'Battery',
+                measurementValue: getBattery(dataValue.substring(92, 94))
+            }];
+            break;
+        // BLE定位数据+sensor+三轴+电量
+        case '1C':
+            collectTime = getUTCTimestamp(dataValue.substring(8, 16));
+            motionId = getMotionId(dataValue.substring(6, 8));
+            measurementArray = [{
+                measurementId: '4200',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'Event Status',
+                measurementValue: getEventStatus(dataValue.substring(0, 6))
+            }, {
+                measurementId: '5002',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'BLE Scan',
+                measurementValue: getMacAndRssiObj(dataValue.substring(16, 58))
+            }, {
+                measurementId: '4097',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'Air Temperature',
+                measurementValue: getSensorValue(dataValue.substring(58, 62), 10)
+            }, {
+                measurementId: '4199',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'Light',
+                measurementValue: getSensorValue(dataValue.substring(62, 66))
+            }, {
+                measurementId: '4210',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'AccelerometerX',
+                measurementValue: getSensorValue(dataValue.substring(66, 70))
+            }, {
+                measurementId: '4211',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'AccelerometerY',
+                measurementValue: getSensorValue(dataValue.substring(70, 74))
+            }, {
+                measurementId: '4212',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'AccelerometerZ',
+                measurementValue: getSensorValue(dataValue.substring(74, 78))
+            }, {
+                measurementId: '3000',
+                timestamp: collectTime,
+                motionId: motionId,
+                type: 'Battery',
+                measurementValue: getBattery(dataValue.substring(78, 80))
+            }];
+            break;
+        // 定位状态 + sensor+三轴数据上报
+        case '1D':
+            collectTime = getUTCTimestamp(dataValue.substring(8, 16));
+            measurementArray.push({
+                measurementId: '3576',
+                timestamp: collectTime,
+                type: 'Positioning Status',
+                measurementValue: getPositingStatus(dataValue.substring(0, 2))
+            });
+            measurementArray.push({
+                timestamp: collectTime,
+                measurementId: '4200',
+                type: 'Event Status',
+                measurementValue: getEventStatus(dataValue.substring(2, 8))
+            });
+            if (!isNaN(parseFloat(getSensorValue(dataValue.substring(16, 20), 10)))) {
+                measurementArray.push({
+                    timestamp: collectTime,
+                    measurementId: '4097',
+                    type: 'Air Temperature',
+                    measurementValue: getSensorValue(dataValue.substring(16, 20), 10)
+                });
+            }
+            if (!isNaN(parseFloat(getSensorValue(dataValue.substring(20, 24))))) {
+                measurementArray.push({
+                    timestamp: collectTime,
+                    measurementId: '4199',
+                    type: 'Light',
+                    measurementValue: getSensorValue(dataValue.substring(20, 24))
+                });
+            }
+            measurementArray.push({
+                timestamp: collectTime,
+                measurementId: '4210',
+                type: 'AccelerometerX',
+                measurementValue: getSensorValue(dataValue.substring(24, 28))
+            });
+            measurementArray.push({
+                timestamp: collectTime,
+                measurementId: '4211',
+                type: 'AccelerometerY',
+                measurementValue: getSensorValue(dataValue.substring(28, 32))
+            });
+            measurementArray.push({
+                timestamp: collectTime,
+                measurementId: '4212',
+                type: 'AccelerometerZ',
+                measurementValue: getSensorValue(dataValue.substring(32, 36))
+            });
+            measurementArray.push({
+                timestamp: collectTime,
+                measurementId: '3000',
+                type: 'Battery',
+                measurementValue: getBattery(dataValue.substring(36, 38))
             });
             break;
     }
     return measurementArray;
 }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+
+
+
 function getMotionId(str) {
     return getInt(str);
 }
