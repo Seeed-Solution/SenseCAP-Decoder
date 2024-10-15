@@ -1,13 +1,4 @@
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-/**
- * Entry, decoder.js
- */
 function Decode(fPort, bytes, variables) {
-  // data split
-
   bytes = bytes2HexString(bytes).toLocaleUpperCase();
   var result = {
     'err': 0,
@@ -41,6 +32,7 @@ function dataSplit(bytes) {
   for (var i = 0; i < bytes.length; i++) {
     var remainingValue = bytes;
     var dataId = remainingValue.substring(0, 2);
+    dataId = dataId.toLowerCase();
     var dataValue = void 0;
     var dataObj = {};
     switch (dataId) {
@@ -56,6 +48,7 @@ function dataSplit(bytes) {
       case '43':
       case '44':
       case '45':
+      case '4a':
         dataValue = remainingValue.substring(2, 22);
         bytes = remainingValue.substring(22);
         dataObj = {
@@ -64,10 +57,11 @@ function dataSplit(bytes) {
         };
         break;
       case '02':
+      case '4b':
         dataValue = remainingValue.substring(2, 18);
         bytes = remainingValue.substring(18);
         dataObj = {
-          'dataId': '02',
+          'dataId': dataId,
           'dataValue': dataValue
         };
         break;
@@ -104,6 +98,14 @@ function dataSplit(bytes) {
           'dataValue': dataValue
         };
         break;
+      case '4c':
+        dataValue = bytes.substring(2, 14);
+        bytes = remainingValue.substring(14);
+        dataObj = {
+          'dataId': dataId,
+          'dataValue': dataValue
+        };
+        break;
       default:
         dataValue = '9';
         break;
@@ -116,15 +118,24 @@ function dataSplit(bytes) {
   return frameArray;
 }
 function dataIdAndDataValueJudge(dataId, dataValue) {
-  var _ref, _ref2, _ref3;
   var messages = [];
+  var temperature;
+  var humidity;
+  var illumination;
+  var uv;
+  var windSpeed;
+  var windDirection;
+  var rainfall;
+  var airPressure;
+  var peakWind;
+  var rainAccumulation;
   switch (dataId) {
     case '01':
-      var temperature = dataValue.substring(0, 4);
-      var humidity = dataValue.substring(4, 6);
-      var illumination = dataValue.substring(6, 14);
-      var uv = dataValue.substring(14, 16);
-      var windSpeed = dataValue.substring(16, 20);
+      temperature = dataValue.substring(0, 4);
+      humidity = dataValue.substring(4, 6);
+      illumination = dataValue.substring(6, 14);
+      uv = dataValue.substring(14, 16);
+      windSpeed = dataValue.substring(16, 20);
       messages = [{
         measurementValue: loraWANV2DataFormat(temperature, 10),
         measurementId: '4097',
@@ -148,9 +159,9 @@ function dataIdAndDataValueJudge(dataId, dataValue) {
       }];
       break;
     case '02':
-      var windDirection = dataValue.substring(0, 4);
-      var rainfall = dataValue.substring(4, 12);
-      var airPressure = dataValue.substring(12, 16);
+      windDirection = dataValue.substring(0, 4);
+      rainfall = dataValue.substring(4, 12);
+      airPressure = dataValue.substring(12, 16);
       messages = [{
         measurementValue: loraWANV2DataFormat(windDirection),
         measurementId: '4104',
@@ -289,237 +300,64 @@ function dataIdAndDataValueJudge(dataId, dataValue) {
         sensorEui: sensecapId
       }];
       break;
-    case '20':
-      var initmeasurementId = 4175;
-      var sensor = [];
-      for (var i = 0; i < dataValue.length; i += 4) {
-        var modelId = loraWANV2DataFormat(dataValue.substring(i, i + 2));
-        var detectionType = loraWANV2DataFormat(dataValue.substring(i + 2, i + 4));
-        var aiHeadValues = "".concat(modelId, ".").concat(detectionType);
-        sensor.push({
-          measurementValue: aiHeadValues,
-          measurementId: initmeasurementId
-        });
-        initmeasurementId++;
-      }
-      messages = sensor;
-      break;
-    case '21':
-      // Vision AI:
-      // AI 识别输出帧
-      var tailValueArray = [];
-      var initTailmeasurementId = 4180;
-      for (var _i = 0; _i < dataValue.length; _i += 4) {
-        var _modelId = loraWANV2DataFormat(dataValue.substring(_i, _i + 2));
-        var _detectionType = loraWANV2DataFormat(dataValue.substring(_i + 2, _i + 4));
-        var aiTailValues = "".concat(_modelId, ".").concat(_detectionType);
-        tailValueArray.push({
-          measurementValue: aiTailValues,
-          measurementId: initTailmeasurementId,
-          type: "AI Detection ".concat(_i)
-        });
-        initTailmeasurementId++;
-      }
-      messages = tailValueArray;
-      break;
-    case '30':
-    case '31':
-      // 首帧或者首帧输出帧
-      var channelInfoOne = loraWANV2ChannelBitFormat(dataValue.substring(0, 2));
-      var dataOne = {
-        measurementValue: loraWANV2DataFormat(dataValue.substring(4, 12), 1000),
-        measurementId: parseInt(channelInfoOne.one),
-        type: 'Measurement'
-      };
-      var dataTwo = {
-        measurementValue: loraWANV2DataFormat(dataValue.substring(12, 20), 1000),
-        measurementId: parseInt(channelInfoOne.two),
-        type: 'Measurement'
-      };
-      var cacheArrayInfo = [];
-      if (parseInt(channelInfoOne.one)) {
-        cacheArrayInfo.push(dataOne);
-      }
-      if (parseInt(channelInfoOne.two)) {
-        cacheArrayInfo.push(dataTwo);
-      }
-      cacheArrayInfo.forEach(function (item) {
-        messages.push(item);
-      });
-      break;
-    case '32':
-      var channelInfoTwo = loraWANV2ChannelBitFormat(dataValue.substring(0, 2));
-      var dataThree = {
-        measurementValue: loraWANV2DataFormat(dataValue.substring(2, 10), 1000),
-        measurementId: parseInt(channelInfoTwo.one),
-        type: 'Measurement'
-      };
-      var dataFour = {
-        measurementValue: loraWANV2DataFormat(dataValue.substring(10, 18), 1000),
-        measurementId: parseInt(channelInfoTwo.two),
-        type: 'Measurement'
-      };
-      if (parseInt(channelInfoTwo.one)) {
-        messages.push(dataThree);
-      }
-      if (parseInt(channelInfoTwo.two)) {
-        messages.push(dataFour);
-      }
-      break;
-    case '33':
-      var channelInfoThree = loraWANV2ChannelBitFormat(dataValue.substring(0, 2));
-      var dataFive = {
-        measurementValue: loraWANV2DataFormat(dataValue.substring(4, 12), 1000),
-        measurementId: parseInt(channelInfoThree.one),
-        type: 'Measurement'
-      };
-      var dataSix = {
-        measurementValue: loraWANV2DataFormat(dataValue.substring(12, 20), 1000),
-        measurementId: parseInt(channelInfoThree.two),
-        type: 'Measurement'
-      };
-      if (parseInt(channelInfoThree.one)) {
-        messages.push(dataFive);
-      }
-      if (parseInt(channelInfoThree.two)) {
-        messages.push(dataSix);
-      }
-      break;
-    case '34':
-      var model = loraWANV2DataFormat(dataValue.substring(0, 2));
-      var GPIOInput = loraWANV2DataFormat(dataValue.substring(2, 4));
-      var simulationModel = loraWANV2DataFormat(dataValue.substring(4, 6));
-      var simulationInterface = loraWANV2DataFormat(dataValue.substring(6, 8));
+    case '4a':
+      temperature = dataValue.substring(0, 4);
+      humidity = dataValue.substring(4, 6);
+      illumination = dataValue.substring(6, 14);
+      uv = dataValue.substring(14, 16);
+      windSpeed = dataValue.substring(16, 20);
       messages = [{
-        'dataloggerProtocol': model,
-        'dataloggerGPIOInput': GPIOInput,
-        'dataloggerAnalogType': simulationModel,
-        'dataloggerAnalogInterface': simulationInterface
-      }];
-      break;
-    case '35':
-    case '36':
-      var channelTDOne = loraWANV2ChannelBitFormat(dataValue.substring(0, 2));
-      var channelSortTDOne = 3920 + (parseInt(channelTDOne.one) - 1) * 2;
-      var channelSortTDTWO = 3921 + (parseInt(channelTDOne.one) - 1) * 2;
-      messages = [(_ref = {}, _defineProperty(_ref, channelSortTDOne, loraWANV2DataFormat(dataValue.substring(2, 10), 1000)), _defineProperty(_ref, channelSortTDTWO, loraWANV2DataFormat(dataValue.substring(10, 18), 1000)), _ref)];
-      break;
-    case '37':
-      var channelTDInfoTwo = loraWANV2ChannelBitFormat(dataValue.substring(0, 2));
-      var channelSortOne = 3920 + (parseInt(channelTDInfoTwo.one) - 1) * 2;
-      var channelSortTWO = 3921 + (parseInt(channelTDInfoTwo.one) - 1) * 2;
-      messages = [(_ref2 = {}, _defineProperty(_ref2, channelSortOne, loraWANV2DataFormat(dataValue.substring(2, 10), 1000)), _defineProperty(_ref2, channelSortTWO, loraWANV2DataFormat(dataValue.substring(10, 18), 1000)), _ref2)];
-      break;
-    case '38':
-      var channelTDInfoThree = loraWANV2ChannelBitFormat(dataValue.substring(0, 2));
-      var channelSortThreeOne = 3920 + (parseInt(channelTDInfoThree.one) - 1) * 2;
-      var channelSortThreeTWO = 3921 + (parseInt(channelTDInfoThree.one) - 1) * 2;
-      messages = [(_ref3 = {}, _defineProperty(_ref3, channelSortThreeOne, loraWANV2DataFormat(dataValue.substring(2, 10), 1000)), _defineProperty(_ref3, channelSortThreeTWO, loraWANV2DataFormat(dataValue.substring(10, 18), 1000)), _ref3)];
-      break;
-    case '39':
-      var electricityWhetherTD = dataValue.substring(0, 2);
-      var hwvTD = dataValue.substring(2, 6);
-      var bdvTD = dataValue.substring(6, 10);
-      var sensorAcquisitionIntervalTD = dataValue.substring(10, 14);
-      var gpsAcquisitionIntervalTD = dataValue.substring(14, 18);
-      messages = [{
-        'Battery(%)': loraWANV2DataFormat(electricityWhetherTD),
-        'Hardware Version': "".concat(loraWANV2DataFormat(hwvTD.substring(0, 2)), ".").concat(loraWANV2DataFormat(hwvTD.substring(2, 4))),
-        'Firmware Version': "".concat(loraWANV2DataFormat(bdvTD.substring(0, 2)), ".").concat(loraWANV2DataFormat(bdvTD.substring(2, 4))),
-        'measureInterval': parseInt(loraWANV2DataFormat(sensorAcquisitionIntervalTD)) * 60,
-        'thresholdMeasureInterval': parseInt(loraWANV2DataFormat(gpsAcquisitionIntervalTD))
-      }];
-      break;
-    case '40':
-    case '41':
-      var lightIntensity = dataValue.substring(0, 4);
-      var loudness = dataValue.substring(4, 8);
-      // X
-      var accelerateX = dataValue.substring(8, 12);
-      // Y
-      var accelerateY = dataValue.substring(12, 16);
-      // Z
-      var accelerateZ = dataValue.substring(16, 20);
-      messages = [{
-        measurementValue: loraWANV2DataFormat(lightIntensity),
-        measurementId: '4193',
-        type: 'Light Intensity'
-      }, {
-        measurementValue: loraWANV2DataFormat(loudness),
-        measurementId: '4192',
-        type: 'Sound Intensity'
-      }, {
-        measurementValue: loraWANV2DataFormat(accelerateX, 100),
-        measurementId: '4150',
-        type: 'AccelerometerX'
-      }, {
-        measurementValue: loraWANV2DataFormat(accelerateY, 100),
-        measurementId: '4151',
-        type: 'AccelerometerY'
-      }, {
-        measurementValue: loraWANV2DataFormat(accelerateZ, 100),
-        measurementId: '4152',
-        type: 'AccelerometerZ'
-      }];
-      break;
-    case '42':
-      var airTemperature = dataValue.substring(0, 4);
-      var AirHumidity = dataValue.substring(4, 8);
-      var tVOC = dataValue.substring(8, 12);
-      var CO2eq = dataValue.substring(12, 16);
-      var soilMoisture = dataValue.substring(16, 20);
-      messages = [{
-        measurementValue: loraWANV2DataFormat(airTemperature, 100),
+        measurementValue: loraWANV2DataFormat(temperature, 10),
         measurementId: '4097',
         type: 'Air Temperature'
       }, {
-        measurementValue: loraWANV2DataFormat(AirHumidity, 100),
+        measurementValue: loraWANV2DataFormat(humidity),
         measurementId: '4098',
         type: 'Air Humidity'
       }, {
-        measurementValue: loraWANV2DataFormat(tVOC),
-        measurementId: '4195',
-        type: 'Total Volatile Organic Compounds'
+        measurementValue: loraWANV2DataFormat(illumination),
+        measurementId: '4099',
+        type: 'Light Intensity'
       }, {
-        measurementValue: loraWANV2DataFormat(CO2eq),
-        measurementId: '4100',
-        type: 'CO2'
+        measurementValue: loraWANV2DataFormat(uv, 10),
+        measurementId: '4190',
+        type: 'UV Index'
       }, {
-        measurementValue: loraWANV2DataFormat(soilMoisture),
-        measurementId: '4196',
-        type: 'Soil moisture intensity'
+        measurementValue: loraWANV2DataFormat(windSpeed, 10),
+        measurementId: '4105',
+        type: 'Wind Speed'
       }];
       break;
-    case '43':
-    case '44':
-      var headerDevKitValueArray = [];
-      var initDevkitmeasurementId = 4175;
-      for (var _i2 = 0; _i2 < dataValue.length; _i2 += 4) {
-        var _modelId2 = loraWANV2DataFormat(dataValue.substring(_i2, _i2 + 2));
-        var _detectionType2 = loraWANV2DataFormat(dataValue.substring(_i2 + 2, _i2 + 4));
-        var _aiHeadValues = "".concat(_modelId2, ".").concat(_detectionType2);
-        headerDevKitValueArray.push({
-          measurementValue: _aiHeadValues,
-          measurementId: initDevkitmeasurementId,
-          type: "AI Detection ".concat(_i2)
-        });
-        initDevkitmeasurementId++;
-      }
-      messages = headerDevKitValueArray;
+    case '4b':
+      windDirection = dataValue.substring(0, 4);
+      rainfall = dataValue.substring(4, 12);
+      airPressure = dataValue.substring(12, 16);
+      messages = [{
+        measurementValue: loraWANV2DataFormat(windDirection),
+        measurementId: '4104',
+        type: 'Wind Direction Sensor'
+      }, {
+        measurementValue: loraWANV2DataFormat(rainfall, 1000),
+        measurementId: '4113',
+        type: 'Rain Gauge'
+      }, {
+        measurementValue: loraWANV2DataFormat(airPressure, 0.1),
+        measurementId: '4101',
+        type: 'Barometric Pressure'
+      }];
       break;
-    case '45':
-      var initTailDevKitmeasurementId = 4180;
-      for (var _i3 = 0; _i3 < dataValue.length; _i3 += 4) {
-        var _modelId3 = loraWANV2DataFormat(dataValue.substring(_i3, _i3 + 2));
-        var _detectionType3 = loraWANV2DataFormat(dataValue.substring(_i3 + 2, _i3 + 4));
-        var _aiTailValues = "".concat(_modelId3, ".").concat(_detectionType3);
-        messages.push({
-          measurementValue: _aiTailValues,
-          measurementId: initTailDevKitmeasurementId,
-          type: "AI Detection ".concat(_i3)
-        });
-        initTailDevKitmeasurementId++;
-      }
+    case '4c':
+      peakWind = dataValue.substring(0, 4);
+      rainAccumulation = dataValue.substring(4, 12);
+      messages = [{
+        measurementValue: loraWANV2DataFormat(peakWind, 10),
+        measurementId: '4191',
+        type: ' Peak Wind Gust'
+      }, {
+        measurementValue: loraWANV2DataFormat(rainAccumulation, 1000),
+        measurementId: '4213',
+        type: 'Rain Accumulation'
+      }];
       break;
     default:
       break;
