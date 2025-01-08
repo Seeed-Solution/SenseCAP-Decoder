@@ -352,7 +352,7 @@ function dataIdAndDataValueJudge(dataId, dataValue) {
       messages = [{
         measurementValue: loraWANV2DataFormat(peakWind, 10),
         measurementId: '4191',
-        type: ' Peak Wind Gust'
+        type: 'Peak Wind Gust'
       }, {
         measurementValue: loraWANV2DataFormat(rainAccumulation, 1000),
         measurementId: '4213',

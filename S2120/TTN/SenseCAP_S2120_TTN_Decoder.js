@@ -313,7 +313,7 @@ function dataIdAndDataValueJudge (dataId, dataValue) {
       peakWind = dataValue.substring(0, 4)
       rainAccumulation = dataValue.substring(4, 12)
       messages = [{
-        measurementValue: loraWANV2DataFormat(peakWind, 10), measurementId: '4191', type: ' Peak Wind Gust'
+        measurementValue: loraWANV2DataFormat(peakWind, 10), measurementId: '4191', type: 'Peak Wind Gust'
       }, {
         measurementValue: loraWANV2DataFormat(rainAccumulation, 1000), measurementId: '4213', type: 'Rain Accumulation'
       }]
