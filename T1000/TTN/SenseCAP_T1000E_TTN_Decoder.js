@@ -184,7 +184,7 @@ function unpack (messageValue) {
 function deserialize (dataId, dataValue) {
     let measurementArray = []
     let collectTime = 0
-    let timestamp = (new Date()).getTime()
+    let timestamp = parseInt((new Date()).getTime() / 1000)
     switch (dataId) {
         case '1E':
             measurementArray = [

@@ -13,10 +13,6 @@ function Decoder (bytes, port) {
         decoded.messages.push({fport: fport, payload: bytesString})
         return { data: decoded }
     }
-    if (fport !== 5) {
-        decoded.valid = false
-        return { data: decoded }
-    }
 
     let measurement = messageAnalyzed(originMessage)
     if (measurement.length === 0) {
@@ -189,118 +185,118 @@ function unpack (messageValue) {
 function deserialize (dataId, dataValue) {
     let measurementArray = []
     let collectTime = 0
-    let timestamp = (new Date()).getTime()
+    let timestamp = parseInt((new Date()).getTime() / 1000)
     switch (dataId) {
         case '1E':
             measurementArray = [
                 {
-                    measurementId: '3000', type: 'Battery', measurementValue: this.getBattery(dataValue.substring(0, 2))
+                    measurementId: '3000', type: 'Battery', measurementValue: getBattery(dataValue.substring(0, 2))
                 }, {
-                    measurementId: '3502', type: 'Firmware Version', measurementValue: this.getSoftVersion(dataValue.substring(2, 6))
+                    measurementId: '3502', type: 'Firmware Version', measurementValue: getSoftVersion(dataValue.substring(2, 6))
                 }, {
-                    measurementId: '3001', type: 'Hardware Version', measurementValue: this.getHardVersion(dataValue.substring(6, 10))
+                    measurementId: '3001', type: 'Hardware Version', measurementValue: getHardVersion(dataValue.substring(6, 10))
                 }, {
-                    measurementId: '3965', type: 'Positioning Strategy', measurementValue: this.getPositioningStrategy(dataValue.substring(10, 12))
+                    measurementId: '3965', type: 'Positioning Strategy', measurementValue: getPositioningStrategy(dataValue.substring(10, 12))
                 }, {
-                    measurementId: '3900', type: 'Uplink Interval', measurementValue: this.getMinsByMin(dataValue.substring(12, 16))},
+                    measurementId: '3900', type: 'Uplink Interval', measurementValue: getMinsByMin(dataValue.substring(12, 16))},
                 {
-                    measurementId: '3974', type: 'Accelerometer Enable', measurementValue: this.getInt(dataValue.substring(16, 18))
+                    measurementId: '3974', type: 'Accelerometer Enable', measurementValue: getInt(dataValue.substring(16, 18))
                 }, {
-                    measurementId: '3941', type: 'SOS Mode', measurementValue: this.getSOSMode(dataValue.substring(18, 20))
+                    measurementId: '3941', type: 'SOS Mode', measurementValue: getSOSMode(dataValue.substring(18, 20))
                 }, {
-                    measurementId: '3972', type: 'WI-FI Scan Limitation', measurementValue: this.getInt(dataValue.substring(20, 22))
+                    measurementId: '3972', type: 'WI-FI Scan Limitation', measurementValue: getInt(dataValue.substring(20, 22))
                 }, {
-                    measurementId: '3973', type: 'Beacon Scan Limitation', measurementValue: this.getInt(dataValue.substring(22, 24))
+                    measurementId: '3973', type: 'Beacon Scan Limitation', measurementValue: getInt(dataValue.substring(22, 24))
                 }
             ]
             break
         case '1F':
             collectTime = timestamp
-            measurementArray = this.getT1000EUplinkHeaderWithSensorAnd3Axis(dataValue, collectTime, 31)
+            measurementArray = getT1000EUplinkHeaderWithSensorAnd3Axis(dataValue, collectTime, 31)
             measurementArray.push({
                 measurementId: '4197',
                 measureTime: collectTime,
-                value: this.getSensorValue(dataValue.substring(24, 32), 1000000)
+                value: getSensorValue(dataValue.substring(24, 32), 1000000)
             })
             measurementArray.push({
                 measurementId: '4198',
                 measureTime: collectTime,
-                value: this.getSensorValue(dataValue.substring(32, 40), 1000000)
+                value: getSensorValue(dataValue.substring(32, 40), 1000000)
             })
             break
         case '20':
             collectTime = timestamp
-            measurementArray = this.getT1000EUplinkHeaderWithSensorAnd3Axis(dataValue, collectTime, 32)
-            scanMax = this.getInt(dataValue.substring(24, 26))
+            measurementArray = getT1000EUplinkHeaderWithSensorAnd3Axis(dataValue, collectTime, 32)
+            scanMax = getInt(dataValue.substring(24, 26))
             if (!scanMax || scanMax === 0) {
                 break
             }
             measurementArray.push({
                 measurementId: '5001',
                 measureTime: collectTime,
-                value: this.getMacAndRssiObj(dataValue.substring(26))
+                value: getMacAndRssiObj(dataValue.substring(26))
             })
             break
         case '21':
             collectTime = timestamp
-            measurementArray = this.getT1000EUplinkHeaderWithSensorAnd3Axis(dataValue, collectTime, 33)
-            scanMax = this.getInt(dataValue.substring(24, 26))
+            measurementArray = getT1000EUplinkHeaderWithSensorAnd3Axis(dataValue, collectTime, 33)
+            scanMax = getInt(dataValue.substring(24, 26))
             if (!scanMax || scanMax === 0) {
                 break
             }
             measurementArray.push({
                 measurementId: '5002',
                 measureTime: collectTime,
-                value: this.getMacAndRssiObj(dataValue.substring(26))
+                value: getMacAndRssiObj(dataValue.substring(26))
             })
             break
         case '22':
             collectTime = timestamp
-            measurementArray = this.getT1000EUplinkHeaderWithSensor(dataValue, collectTime, 34)
+            measurementArray = getT1000EUplinkHeaderWithSensor(dataValue, collectTime, 34)
             measurementArray.push({
                 measurementId: '4197',
                 measureTime: collectTime,
-                value: this.getSensorValue(dataValue.substring(12, 20), 1000000)
+                value: getSensorValue(dataValue.substring(12, 20), 1000000)
             })
             measurementArray.push({
                 measurementId: '4198',
                 measureTime: collectTime,
-                value: this.getSensorValue(dataValue.substring(20, 28), 1000000)
+                value: getSensorValue(dataValue.substring(20, 28), 1000000)
             })
             break
         case '23':
             collectTime = timestamp
-            measurementArray = this.getT1000EUplinkHeaderWithSensor(dataValue, collectTime, 35)
-            scanMax = this.getInt(dataValue.substring(12, 14))
+            measurementArray = getT1000EUplinkHeaderWithSensor(dataValue, collectTime, 35)
+            scanMax = getInt(dataValue.substring(12, 14))
             if (!scanMax || scanMax === 0) {
                 break
             }
             measurementArray.push({
                 measurementId: '5001',
                 measureTime: collectTime,
-                value: this.getMacAndRssiObj(dataValue.substring(14))
+                value: getMacAndRssiObj(dataValue.substring(14))
             })
             break
         case '24':
             collectTime = timestamp
-            measurementArray = this.getT1000EUplinkHeaderWithSensor(dataValue, collectTime, 36)
-            scanMax = this.getInt(dataValue.substring(12, 14))
+            measurementArray = getT1000EUplinkHeaderWithSensor(dataValue, collectTime, 36)
+            scanMax = getInt(dataValue.substring(12, 14))
             if (!scanMax || scanMax === 0) {
                 break
             }
             measurementArray.push({
                 measurementId: '5002',
                 measureTime: collectTime,
-                value: this.getMacAndRssiObj(dataValue.substring(14))
+                value: getMacAndRssiObj(dataValue.substring(14))
             })
             break
         case '25':
             collectTime = timestamp
-            measurementArray = this.getT1000EUplinkHeaderWithSensorAnd3Axis(dataValue, collectTime, 37)
+            measurementArray = getT1000EUplinkHeaderWithSensorAnd3Axis(dataValue, collectTime, 37)
             break
         case '26':
             collectTime = timestamp
-            measurementArray = this.getT1000EUplinkHeaderWithSensor(dataValue, collectTime, 38)
+            measurementArray = getT1000EUplinkHeaderWithSensor(dataValue, collectTime, 38)
             break
     }
     return measurementArray
@@ -627,8 +623,8 @@ function loraWANV2PositiveDataFormat (str, divisor = 1) {
 }
 
 function getT1000EUplinkHeaderWithSensorAnd3Axis (dataValue, collectTime, dataId) {
-    let measurementArray = this.getT1000EUplinkHeaderWithSensor(dataValue, collectTime, dataId)
-    let value = this.getSignSensorValue(dataValue.substring(12, 16), 1)
+    let measurementArray = getT1000EUplinkHeaderWithSensor(dataValue, collectTime, dataId)
+    let value = getSignSensorValue(dataValue.substring(12, 16), 1)
     if (value !== null) {
         measurementArray.push({
             measurementId: '4210',
@@ -636,7 +632,7 @@ function getT1000EUplinkHeaderWithSensorAnd3Axis (dataValue, collectTime, dataId
             value: value
         })
     }
-    value = this.getSignSensorValue(dataValue.substring(16, 20), 1)
+    value = getSignSensorValue(dataValue.substring(16, 20), 1)
     if (value !== null) {
         measurementArray.push({
             measurementId: '4211',
@@ -644,7 +640,7 @@ function getT1000EUplinkHeaderWithSensorAnd3Axis (dataValue, collectTime, dataId
             value: value
         })
     }
-    value = this.getSignSensorValue(dataValue.substring(20, 24), 1)
+    value = getSignSensorValue(dataValue.substring(20, 24), 1)
     if (value !== null) {
         measurementArray.push({
             measurementId: '4212',
@@ -656,22 +652,22 @@ function getT1000EUplinkHeaderWithSensorAnd3Axis (dataValue, collectTime, dataId
 }
 
 function getT1000EUplinkHeaderWithSensor (dataValue, collectTime, dataId) {
-    let measurementArray = this.getT1000EUplinkHeader(dataValue, collectTime, dataId)
+    let measurementArray = getT1000EUplinkHeader(dataValue, collectTime, dataId)
     measurementArray.push({
         measurementId: '4097',
         measureTime: collectTime,
-        value: this.getSensorValue(dataValue.substring(4, 8), 10)
+        value: getSensorValue(dataValue.substring(4, 8), 10)
     })
     measurementArray.push({
         measurementId: '4199',
         measureTime: collectTime,
-        value: this.getSensorValue(dataValue.substring(8, 12))
+        value: getSensorValue(dataValue.substring(8, 12))
     })
     return measurementArray
 }
 
 function getT1000EUplinkHeader (dataValue, collectTime, dataId) {
-    let eventList = this.getEventStatus(dataValue.substring(0, 2))
+    let eventList = getEventStatus(dataValue.substring(0, 2))
     let measurementArray = []
     measurementArray.push({
         measurementId: '5003',
@@ -681,16 +677,16 @@ function getT1000EUplinkHeader (dataValue, collectTime, dataId) {
     measurementArray.push({
         measurementId: '3000',
         measureTime: collectTime,
-        value: this.getBattery(dataValue.substring(2, 4))
+        value: getBattery(dataValue.substring(2, 4))
     })
     return measurementArray
 }
 
 function getSignSensorValue (str, dig = 1) {
-    if (this.isNull(str)) {
+    if (isNull(str)) {
         return null
     }
-    return this.loraWANV2DataFormat(str, dig)
+    return loraWANV2DataFormat(str, dig)
 }
 function isNull (str) {
     if (str.substring(0, 1) !== '8') {
