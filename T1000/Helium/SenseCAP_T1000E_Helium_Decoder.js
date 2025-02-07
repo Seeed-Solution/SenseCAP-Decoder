@@ -1,18 +1,23 @@
-function decodeUplink (input) {
-    const bytes = input['bytes']
-    const fport = parseInt(input['fPort'])
+function Decoder (bytes, port) {
     const bytesString = bytes2HexString(bytes)
     const originMessage = bytesString.toLocaleUpperCase()
+    const fport = parseInt(port)
     const decoded = {
         valid: true,
         err: 0,
         payload: bytesString,
         messages: []
     }
+
     if (fport === 199 || fport === 192) {
         decoded.messages.push({fport: fport, payload: bytesString})
         return { data: decoded }
     }
+    if (fport !== 5) {
+        decoded.valid = false
+        return { data: decoded }
+    }
+
     let measurement = messageAnalyzed(originMessage)
     if (measurement.length === 0) {
         decoded.valid = false
