@@ -36,7 +36,6 @@ function decodeUplink (input) {
             decoded.messages.push(elements)
         }
     }
-    // decoded.messages = measurement
     return { data: decoded }
 }
 
@@ -59,7 +58,6 @@ function messageAnalyzed (messageValue) {
 
 function unpack (messageValue) {
     let frameArray = []
-
     for (let i = 0; i < messageValue.length; i++) {
         let remainMessage = messageValue
         let dataId = remainMessage.substring(0, 2).toUpperCase()
@@ -500,7 +498,6 @@ function deserialize (dataId, dataValue) {
                 {measurementId: '3000', timestamp: collectTime, motionId, type: 'Battery', measurementValue: getBattery(dataValue.substring(52, 54))},
             ]
             break
-        // WIFI定位数据+sensor+三轴+电量
         case '1B':
             collectTime = getUTCTimestamp(dataValue.substring(8, 16))
             motionId = getMotionId(dataValue.substring(6, 8))
@@ -515,7 +512,6 @@ function deserialize (dataId, dataValue) {
                 {measurementId: '3000', timestamp: collectTime, motionId, type: 'Battery', measurementValue: getBattery(dataValue.substring(92, 94))}
             ]
             break
-        // BLE定位数据+sensor+三轴+电量
         case '1C':
             collectTime = getUTCTimestamp(dataValue.substring(8, 16))
             motionId = getMotionId(dataValue.substring(6, 8))
@@ -530,7 +526,6 @@ function deserialize (dataId, dataValue) {
                 {measurementId: '3000', timestamp: collectTime, motionId, type: 'Battery', measurementValue: getBattery(dataValue.substring(78, 80))}
             ]
             break
-        // 定位状态 + sensor+三轴数据上报
         case '1D':
             collectTime = getUTCTimestamp(dataValue.substring(8, 16))
             measurementArray.push({
