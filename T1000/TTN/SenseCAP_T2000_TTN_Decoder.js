@@ -1,7 +1,3 @@
-module.exports = {
-    decodeUplink
-}
-
 function decodeUplink (input) {
     const bytes = input['bytes']
     const bytesString = bytes2HexString(bytes)
@@ -66,6 +62,11 @@ function unpack (messageValue) {
         let scanCount
         switch (dataId) {
             case '0C':
+                dataValue = ''
+                messageValue = remainMessage.substring(2)
+                dataObj = {
+                    'dataId': dataId, 'dataValue': ''
+                }
                 break
             case '0D':
                 dataValue = remainMessage.substring(2, 10)
@@ -225,7 +226,7 @@ function unpack (messageValue) {
             default:
                 return frameArray
         }
-        if (dataValue.length < 2) {
+        if (dataValue.length < 2 && dataObj.dataId !== '0C') {
             break
         }
         frameArray.push(dataObj)
@@ -236,8 +237,7 @@ function unpack (messageValue) {
 function deserialize (dataId, dataValue) {
     let measurementArray = []
     let eventList = []
-    let measurement = {}
-    let collectTime = 0
+    let timestamp = 0
     let value = null
     let motionId = 0
     let scanMax = 0
@@ -246,6 +246,7 @@ function deserialize (dataId, dataValue) {
     let heartbeatInterval = 0
     let periodicInterval = 0
     let eventInterval = 0
+    let posId = null
     switch (dataId) {
         case '0C':
             measurementArray.push({type: "timeSync"})
@@ -288,81 +289,80 @@ function deserialize (dataId, dataValue) {
             }
             measurementArray = [
                 {
-                    measurementId: '3940', type: 'Work Mode', measurementValue: workMode
+                    measurementId: '3940', measurementValue: workMode
                 }, {
-                    measurementId: '3965', type: 'Positioning Strategy', measurementValue: getPositioningStrategy(dataValue.substring(2, 4))
+                    measurementId: '3965', measurementValue: getPositioningStrategy(dataValue.substring(2, 4))
                 }, {
-                    measurementId: '3942', type: 'Heartbeat Interval', measurementValue: heartbeatInterval
+                    measurementId: '3942', measurementValue: heartbeatInterval
                 }, {
-                    measurementId: '3943', type: 'Periodic Interval', measurementValue: periodicInterval
+                    measurementId: '3943', measurementValue: periodicInterval
                 }, {
-                    measurementId: '3944', type: 'Event Interval', measurementValue: eventInterval
+                    measurementId: '3944', measurementValue: eventInterval
                 }, {
-                    measurementId: '3974', type: '3X Sensor Enable', measurementValue: getInt(dataValue.substring(16, 18))
+                    measurementId: '3974', measurementValue: getInt(dataValue.substring(16, 18))
                 }, {
-                    measurementId: '3976', type: 'Anti-Theft', measurementValue: getInt(dataValue.substring(18, 20))
+                    measurementId: '3976', measurementValue: getInt(dataValue.substring(18, 20))
                 }, {
-                    measurementId: '3977', type: 'GNSS Scan Timeout', measurementValue: getInt(dataValue.substring(20, 22))
+                    measurementId: '3977', measurementValue: getInt(dataValue.substring(20, 22))
                 }, {
-                    measurementId: '3900', type: 'Uplink Interval', measurementValue: interval
+                    measurementId: '3900', measurementValue: interval
                 }, {
-                    measurementId: '3978', type: 'BLE Scan Timeout', measurementValue: getInt(dataValue.substring(22, 24))
+                    measurementId: '3978', measurementValue: getInt(dataValue.substring(22, 24))
                 }, {
-                    measurementId: '3979', type: 'UUID Filter', measurementValue: dataValue.substring(26, 26 + getInt(dataValue.substring(24, 26)) * 2)
+                    measurementId: '3979', measurementValue: dataValue.substring(26, 26 + getInt(dataValue.substring(24, 26)) * 2)
                 }
             ]
             // measurementArray.push(measurement)
             break
         case '29':
             measurementArray.push({
-                measurementId: '3946', type: 'Motion Enable', value: getInt(dataValue.substring(0, 2))
+                measurementId: '3946', value: getInt(dataValue.substring(0, 2))
             })
             measurementArray.push({
-                measurementId: '3947', type: 'Any Motion Threshold', value: getSensorValue(dataValue.substring(2, 6), 1)
+                measurementId: '3947', value: getSensorValue(dataValue.substring(2, 6), 1)
             })
             measurementArray.push({
-                measurementId: '3948', type: 'Motion Start Interval', value: getMinsByMin(dataValue.substring(6, 10))
+                measurementId: '3948', value: getMinsByMin(dataValue.substring(6, 10))
             })
             measurementArray.push({
-                measurementId: '3949', type: 'Static Enable', value: getInt(dataValue.substring(10, 12))
+                measurementId: '3949', value: getInt(dataValue.substring(10, 12))
             })
             measurementArray.push({
-                measurementId: '3950', type: 'Device Static Timeout', value: getMinsByMin(dataValue.substring(12, 16))
+                measurementId: '3950', value: getMinsByMin(dataValue.substring(12, 16))
             })
             measurementArray.push({
-                measurementId: '3951', type: 'Shock Enable', value: getInt(dataValue.substring(16, 18))
+                measurementId: '3951', value: getInt(dataValue.substring(16, 18))
             })
             measurementArray.push({
-                measurementId: '3952', type: 'Shock Threshold', value: getInt(dataValue.substring(18, 22))
+                measurementId: '3952', value: getInt(dataValue.substring(18, 22))
             })
             break
         case '2A':
             measurementArray.push({
-                measurementId: '3000', type: 'Battery', value: getBattery(dataValue.substring(0, 2))
+                measurementId: '3000', value: getBattery(dataValue.substring(0, 2))
             })
             measurementArray.push({
-                measurementId: '3940', type: 'Work Mode', value: getWorkingMode(dataValue.substring(2, 4))
+                measurementId: '3940', value: getWorkingMode(dataValue.substring(2, 4))
             })
             measurementArray.push({
-                measurementId: '3965', type: 'Positioning Strategy', value: getPositioningStrategy(dataValue.substring(4, 6))
+                measurementId: '3965', value: getPositioningStrategy(dataValue.substring(4, 6))
             })
             measurementArray.push({
-                measurementId: '3974', type: '3X Sensor Enable', value: getInt(dataValue.substring(6, 8))
+                measurementId: '3974', value: getInt(dataValue.substring(6, 8))
             })
             measurementArray.push({
-                measurementId: '3976', type: 'Anti-Theft', value: getInt(dataValue.substring(8, 10))
+                measurementId: '3976', value: getInt(dataValue.substring(8, 10))
             })
             break
         case '2B':
             eventList = getEventStatus(dataValue.substring(0, 4))
             motionId = getMotionId(dataValue.substring(4, 6))
-            collectTime = getUTCTimestamp(dataValue.substring(6, 14))
+            timestamp = getUTCTimestamp(dataValue.substring(6, 14))
             value = getSignSensorValue(dataValue.substring(14, 18), 1)
             if (value !== null) {
                 measurementArray.push({
                     measurementId: '4210',
-                    timestamp: collectTime,
-                    type: 'AccelerometerX',
+                    timestamp,
                     motionId,
                     value: value
                 })
@@ -371,8 +371,7 @@ function deserialize (dataId, dataValue) {
             if (value !== null) {
                 measurementArray.push({
                     measurementId: '4211',
-                    timestamp: collectTime,
-                    type: 'AccelerometerY',
+                    timestamp,
                     motionId,
                     value: value
                 })
@@ -381,109 +380,102 @@ function deserialize (dataId, dataValue) {
             if (value !== null) {
                 measurementArray.push({
                     measurementId: '4212',
-                    timestamp: collectTime,
-                    type: 'AccelerometerZ',
+                    timestamp,
                     motionId,
                     value: value
                 })
             }
             measurementArray.push({
                 measurementId: '4197',
-                timestamp: collectTime,
-                type: 'Longitude',
+                timestamp,
                 motionId,
                 value: '' + getSensorValue(dataValue.substring(26, 34), 1000000)
             })
             measurementArray.push({
                 measurementId: '4198',
-                timestamp: collectTime,
-                type: 'Latitude',
+                timestamp,
                 motionId,
                 value: '' + getSensorValue(dataValue.substring(34, 42), 1000000)
             })
             measurementArray.push({
                 measurementId: '3000',
-                timestamp: collectTime,
-                type: 'Battery',
+                timestamp,
                 motionId,
                 value: '' + getBattery(dataValue.substring(42, 44))
             })
             if (eventList && eventList.length > 0) {
                 measurementArray.push({
                     measurementId: '4200',
-                    timestamp: collectTime,
-                    type: 'Event Status',
+                    timestamp,
                     motionId,
                     value: eventList
                 })
             }
             break
         case '2C':
-            eventList = getEventStatus(dataValue.substring(0, 4))
-            motionId = getMotionId(dataValue.substring(4, 6))
-            collectTime = getUTCTimestamp(dataValue.substring(6, 14))
-            value = getSignSensorValue(dataValue.substring(14, 18), 1)
-            if (value !== null) {
-                measurementArray.push({
-                    measurementId: '4210',
-                    timestamp: collectTime,
-                    motionId,
-                    value: value
-                })
-            }
-            value = getSignSensorValue(dataValue.substring(18, 22), 1)
-            if (value !== null) {
-                measurementArray.push({
-                    measurementId: '4211',
-                    timestamp: collectTime,
-                    motionId,
-                    value: value
-                })
-            }
-            value = getSignSensorValue(dataValue.substring(22, 26), 1)
-            if (value !== null) {
-                measurementArray.push({
-                    measurementId: '4212',
-                    timestamp: collectTime,
-                    motionId,
-                    value: value
-                })
-            }
-            measurementArray.push({
-                measurementId: '3000',
-                timestamp: collectTime,
-                type: 'Battery',
-                motionId,
-                value: '' + getBattery(dataValue.substring(26, 28))
-            })
-            scanMax = getInt(dataValue.substring(28, 30))
-            if (scanMax && scanMax > 0) {
-                measurementArray.push({
-                    measurementId: '5001',
-                    timestamp: collectTime,
-                    motionId,
-                    value: getMacAndRssiObj(dataValue.substring(30))
-                })
-            }
-            if (eventList && eventList.length > 0) {
-                measurementArray.push({
-                    measurementId: '4200',
-                    timestamp: collectTime,
-                    type: 'Event Status',
-                    motionId,
-                    value: eventList
-                })
-            }
-            break
+            // eventList = getEventStatus(dataValue.substring(0, 4))
+            // motionId = getMotionId(dataValue.substring(4, 6))
+            // timestamp = getUTCTimestamp(dataValue.substring(6, 14))
+            // value = getSignSensorValue(dataValue.substring(14, 18), 1)
+            // if (value !== null) {
+            //     measurementArray.push({
+            //         measurementId: '4210',
+            //         timestamp,
+            //         motionId,
+            //         value: value
+            //     })
+            // }
+            // value = getSignSensorValue(dataValue.substring(18, 22), 1)
+            // if (value !== null) {
+            //     measurementArray.push({
+            //         measurementId: '4211',
+            //         timestamp,
+            //         motionId,
+            //         value: value
+            //     })
+            // }
+            // value = getSignSensorValue(dataValue.substring(22, 26), 1)
+            // if (value !== null) {
+            //     measurementArray.push({
+            //         measurementId: '4212',
+            //         timestamp,
+            //         motionId,
+            //         value: value
+            //     })
+            // }
+            // measurementArray.push({
+            //     measurementId: '3000',
+            //     timestamp,
+            //     motionId,
+            //     value: '' + getBattery(dataValue.substring(26, 28))
+            // })
+            // scanMax = getInt(dataValue.substring(28, 30))
+            // if (scanMax && scanMax > 0) {
+            //     measurementArray.push({
+            //         measurementId: '5001',
+            //         timestamp,
+            //         motionId,
+            //         value: getMacAndRssiObj(dataValue.substring(30))
+            //     })
+            // }
+            // if (eventList && eventList.length > 0) {
+            //     measurementArray.push({
+            //         measurementId: '4200',
+            //         timestamp,
+            //         motionId,
+            //         value: eventList
+            //     })
+            // }
+            // break
         case '2D':
             eventList = getEventStatus(dataValue.substring(0, 4))
             motionId = getMotionId(dataValue.substring(4, 6))
-            collectTime = getUTCTimestamp(dataValue.substring(6, 14))
+            timestamp = getUTCTimestamp(dataValue.substring(6, 14))
             value = getSignSensorValue(dataValue.substring(14, 18), 1)
             if (value !== null) {
                 measurementArray.push({
                     measurementId: '4210',
-                    timestamp: collectTime,
+                    timestamp,
                     motionId,
                     value: value
                 })
@@ -492,7 +484,7 @@ function deserialize (dataId, dataValue) {
             if (value !== null) {
                 measurementArray.push({
                     measurementId: '4211',
-                    timestamp: collectTime,
+                    timestamp,
                     motionId,
                     value: value
                 })
@@ -501,23 +493,22 @@ function deserialize (dataId, dataValue) {
             if (value !== null) {
                 measurementArray.push({
                     measurementId: '4212',
-                    timestamp: collectTime,
+                    timestamp,
                     motionId,
                     value: value
                 })
             }
             measurementArray.push({
                 measurementId: '3000',
-                timestamp: collectTime,
-                type: 'Battery',
+                timestamp,
                 motionId,
                 value: '' + getBattery(dataValue.substring(26, 28))
             })
             scanMax = getInt(dataValue.substring(28, 30))
             if (scanMax && scanMax > 0) {
                 measurementArray.push({
-                    measurementId: '5002',
-                    timestamp: collectTime,
+                    measurementId: dataId === '2D'? '5001':'5002',
+                    timestamp,
                     motionId,
                     value: getMacAndRssiObj(dataValue.substring(30))
                 })
@@ -525,8 +516,7 @@ function deserialize (dataId, dataValue) {
             if (eventList && eventList.length > 0) {
                 measurementArray.push({
                     measurementId: '4200',
-                    timestamp: collectTime,
-                    type: 'Event Status',
+                    timestamp,
                     motionId,
                     value: eventList
                 })
@@ -535,33 +525,29 @@ function deserialize (dataId, dataValue) {
         case '2E':
             eventList = getEventStatus(dataValue.substring(0, 4))
             motionId = getMotionId(dataValue.substring(4, 6))
-            collectTime = getUTCTimestamp(dataValue.substring(6, 14))
+            timestamp = getUTCTimestamp(dataValue.substring(6, 14))
             measurementArray.push({
                 measurementId: '4197',
-                timestamp: collectTime,
-                type: 'Longitude',
+                timestamp,
                 motionId,
                 value: '' + getSensorValue(dataValue.substring(14, 22), 1000000)
             })
             measurementArray.push({
                 measurementId: '4198',
-                timestamp: collectTime,
-                type: 'Latitude',
+                timestamp,
                 motionId,
                 value: '' + getSensorValue(dataValue.substring(22, 30), 1000000)
             })
             measurementArray.push({
                 measurementId: '3000',
-                timestamp: collectTime,
-                type: 'Battery',
+                timestamp,
                 motionId,
                 value: '' + getBattery(dataValue.substring(30, 32))
             })
             if (eventList && eventList.length > 0) {
                 measurementArray.push({
                     measurementId: '4200',
-                    timestamp: collectTime,
-                    type: 'Event Status',
+                    timestamp,
                     motionId,
                     value: eventList
                 })
@@ -570,11 +556,10 @@ function deserialize (dataId, dataValue) {
         case '2F':
             eventList = getEventStatus(dataValue.substring(0, 4))
             motionId = getMotionId(dataValue.substring(4, 6))
-            collectTime = getUTCTimestamp(dataValue.substring(6, 14))
+            timestamp = getUTCTimestamp(dataValue.substring(6, 14))
             measurementArray.push({
                 measurementId: '3000',
-                timestamp: collectTime,
-                type: 'Battery',
+                timestamp,
                 motionId,
                 value: '' + getBattery(dataValue.substring(14, 16))
             })
@@ -582,7 +567,7 @@ function deserialize (dataId, dataValue) {
             if (scanMax && scanMax > 0) {
                 measurementArray.push({
                     measurementId: '5001',
-                    timestamp: collectTime,
+                    timestamp,
                     motionId,
                     value: getMacAndRssiObj(dataValue.substring(18))
                 })
@@ -590,8 +575,7 @@ function deserialize (dataId, dataValue) {
             if (eventList && eventList.length > 0) {
                 measurementArray.push({
                     measurementId: '4200',
-                    timestamp: collectTime,
-                    type: 'Event Status',
+                    timestamp,
                     motionId,
                     value: eventList
                 })
@@ -600,11 +584,10 @@ function deserialize (dataId, dataValue) {
         case '30':
             eventList = getEventStatus(dataValue.substring(0, 4))
             motionId = getMotionId(dataValue.substring(4, 6))
-            collectTime = getUTCTimestamp(dataValue.substring(6, 14))
+            timestamp = getUTCTimestamp(dataValue.substring(6, 14))
             measurementArray.push({
                 measurementId: '3000',
-                timestamp: collectTime,
-                type: 'Battery',
+                timestamp,
                 motionId,
                 value: '' + getBattery(dataValue.substring(14, 16))
             })
@@ -612,7 +595,7 @@ function deserialize (dataId, dataValue) {
             if (scanMax && scanMax > 0) {
                 measurementArray.push({
                     measurementId: '5002',
-                    timestamp: collectTime,
+                    timestamp,
                     motionId,
                     value: getMacAndRssiObj(dataValue.substring(18))
                 })
@@ -620,8 +603,7 @@ function deserialize (dataId, dataValue) {
             if (eventList && eventList.length > 0) {
                 measurementArray.push({
                     measurementId: '4200',
-                    timestamp: collectTime,
-                    type: 'Event Status',
+                    timestamp,
                     motionId,
                     value: eventList
                 })
@@ -629,11 +611,10 @@ function deserialize (dataId, dataValue) {
             break
         case '31':
             eventList = getEventStatus(dataValue.substring(2, 6))
-            collectTime = getUTCTimestamp(dataValue.substring(6, 14))
+            timestamp = getUTCTimestamp(dataValue.substring(6, 14))
             measurementArray.push({
                 measurementId: '3576',
-                timestamp: collectTime,
-                type: 'Positioning Status',
+                timestamp,
                 motionId,
                 value: getPositingStatus(dataValue.substring(0, 2))
             })
@@ -641,7 +622,7 @@ function deserialize (dataId, dataValue) {
             if (value !== null) {
                 measurementArray.push({
                     measurementId: '4210',
-                    timestamp: collectTime,
+                    timestamp,
                     motionId,
                     value: value
                 })
@@ -650,7 +631,7 @@ function deserialize (dataId, dataValue) {
             if (value !== null) {
                 measurementArray.push({
                     measurementId: '4211',
-                    timestamp: collectTime,
+                    timestamp,
                     motionId,
                     value: value
                 })
@@ -659,23 +640,21 @@ function deserialize (dataId, dataValue) {
             if (value !== null) {
                 measurementArray.push({
                     measurementId: '4212',
-                    timestamp: collectTime,
+                    timestamp,
                     motionId,
                     value: value
                 })
             }
             measurementArray.push({
                 measurementId: '3000',
-                timestamp: collectTime,
-                type: 'Battery',
+                timestamp,
                 motionId,
                 value: '' + getBattery(dataValue.substring(26, 28))
             })
             if (eventList && eventList.length > 0) {
                 measurementArray.push({
                     measurementId: '4200',
-                    timestamp: collectTime,
-                    type: 'Event Status',
+                    timestamp,
                     motionId,
                     value: eventList
                 })
@@ -683,33 +662,104 @@ function deserialize (dataId, dataValue) {
             break
         case '32':
             eventList = getEventStatus(dataValue.substring(2, 6))
-            collectTime = getUTCTimestamp(dataValue.substring(6, 14))
+            timestamp = getUTCTimestamp(dataValue.substring(6, 14))
             measurementArray.push({
                 measurementId: '3576',
-                timestamp: collectTime,
-                type: 'Positioning Status',
+                timestamp,
                 motionId,
                 value: getPositingStatus(dataValue.substring(0, 2))
             })
             measurementArray.push({
                 measurementId: '3000',
-                timestamp: collectTime,
-                type: 'Battery',
+                timestamp,
                 motionId,
                 value: '' + getBattery(dataValue.substring(14, 16))
             })
             if (eventList && eventList.length > 0) {
                 measurementArray.push({
                     measurementId: '4200',
-                    timestamp: collectTime,
-                    type: 'Event Status',
+                    timestamp,
                     motionId,
                     value: eventList
                 })
             }
             break
     }
+    if (measurementArray.length > 0) {
+        for (let frag of measurementArray) {
+            if (frag.measurementId) {
+                frag.type = getTypeByMeasurementId(frag.measurementId)
+            }
+        }
+    }
     return measurementArray
+}
+
+function getTypeByMeasurementId (measurementId) {
+    switch (measurementId) {
+        case '3000':
+            return 'Battery'
+        case '3502':
+            return 'Firmware Version'
+        case '3001':
+            return 'Hardware Version'
+        case '3940':
+            return 'Work Mode'
+        case '3965':
+            return 'Positioning Strategy'
+        case '3942':
+            return 'Heartbeat Interval'
+        case '3943':
+            return 'Periodic Interval'
+        case '3944':
+            return 'Event Interval'
+        case '3974':
+            return '3X Sensor Enable'
+        case '3976':
+            return 'Anti-Theft'
+        case '3977':
+            return 'GNSS Scan Timeout'
+        case '3900':
+            return 'Uplink Interval'
+        case '3978':
+            return 'BLE Scan Timeout'
+        case '3979':
+            return 'UUID Filter'
+        case '3946':
+            return 'Motion Enable'
+        case '3947':
+            return 'Any Motion Threshold'
+        case '3948':
+            return 'Motion Start Interval'
+        case '3949':
+            return 'Static Enable'
+        case '3950':
+            return 'Device Static Timeout'
+        case '3951':
+            return 'Shock Enable'
+        case '3952':
+            return 'Shock Threshold'
+        case '4210':
+            return 'AccelerometerX'
+        case '4211':
+            return 'AccelerometerY'
+        case '4212':
+            return 'AccelerometerZ'
+        case '4197':
+            return 'Longitude'
+        case '4198':
+            return 'Latitude'
+        case '4200':
+            return 'Event Status'
+        case '5001':
+            return 'Wi-Fi Scan'
+        case '5002':
+            return 'BLE Scan'
+        case '3576':
+            return 'Positioning Status'
+        default:
+            return ''
+    }
 }
 
 function getMotionId (str) {
@@ -774,33 +824,33 @@ function getUpT2000 (messageValue) {
     }
     let data = [
         {
-            measurementId: '3000', type: 'Battery', measurementValue: getBattery(messageValue.substring(0, 2))
+            measurementId: '3000', measurementValue: getBattery(messageValue.substring(0, 2))
         }, {
-            measurementId: '3502', type: 'Firmware Version', measurementValue: getSoftVersion(messageValue.substring(2, 6))
+            measurementId: '3502', measurementValue: getSoftVersion(messageValue.substring(2, 6))
         }, {
-            measurementId: '3001', type: 'Hardware Version', measurementValue: getHardVersion(messageValue.substring(6, 10))
+            measurementId: '3001', measurementValue: getHardVersion(messageValue.substring(6, 10))
         }, {
-            measurementId: '3940', type: 'Work Mode', measurementValue: workMode
+            measurementId: '3940', measurementValue: workMode
         }, {
-            measurementId: '3965', type: 'Positioning Strategy', measurementValue: getPositioningStrategy(messageValue.substring(12, 14))
+            measurementId: '3965', measurementValue: getPositioningStrategy(messageValue.substring(12, 14))
         }, {
-            measurementId: '3942', type: 'Heartbeat Interval', measurementValue: heartbeatInterval
+            measurementId: '3942', measurementValue: heartbeatInterval
         }, {
-            measurementId: '3943', type: 'Periodic Interval', measurementValue: periodicInterval
+            measurementId: '3943', measurementValue: periodicInterval
         }, {
-            measurementId: '3944', type: 'Event Interval', measurementValue: eventInterval
+            measurementId: '3944', measurementValue: eventInterval
         }, {
-            measurementId: '3974', type: '3X Sensor Enable', measurementValue: getInt(messageValue.substring(26, 28))
+            measurementId: '3974', measurementValue: getInt(messageValue.substring(26, 28))
         }, {
-            measurementId: '3976', type: 'Anti-Theft', measurementValue: getInt(messageValue.substring(28, 30))
+            measurementId: '3976', measurementValue: getInt(messageValue.substring(28, 30))
         }, {
-            measurementId: '3977', type: 'GNSS Scan Timeout', measurementValue: getInt(messageValue.substring(30, 32))
+            measurementId: '3977', measurementValue: getInt(messageValue.substring(30, 32))
         }, {
-            measurementId: '3900', type: 'Uplink Interval', measurementValue: interval
+            measurementId: '3900', measurementValue: interval
         }, {
-            measurementId: '3978', type: 'BLE Scan Timeout', measurementValue: getInt(messageValue.substring(54, 56))
+            measurementId: '3978', measurementValue: getInt(messageValue.substring(54, 56))
         }, {
-            measurementId: '3979', type: 'UUID Filter', measurementValue: messageValue.substring(58, 58 + getInt(messageValue.substring(56, 58)) * 2)
+            measurementId: '3979', measurementValue: messageValue.substring(58, 58 + getInt(messageValue.substring(56, 58)) * 2)
         }
     ]
     let motionSetting = getMotionSetting(messageValue.substring(32, 42))
@@ -812,23 +862,23 @@ function getUpT2000 (messageValue) {
 
 function getMotionSetting (str) {
     return [
-        {measurementId: '3946', type: 'Motion Enable', measurementValue: getInt(str.substring(0, 2))},
-        {measurementId: '3947', type: 'Any Motion Threshold', measurementValue: getSensorValue(str.substring(2, 6), 1)},
-        {measurementId: '3948', type: 'Motion Start Interval', measurementValue: getMinsByMin(str.substring(6, 10))},
+        {measurementId: '3946', measurementValue: getInt(str.substring(0, 2))},
+        {measurementId: '3947', measurementValue: getSensorValue(str.substring(2, 6), 1)},
+        {measurementId: '3948', measurementValue: getMinsByMin(str.substring(6, 10))},
     ]
 }
 
 function getStaticSetting (str) {
     return [
-        {measurementId: '3949', type: 'Static Enable', measurementValue: getInt(str.substring(0, 2))},
-        {measurementId: '3950', type: 'Device Static Timeout', measurementValue: getMinsByMin(str.substring(2, 6))}
+        {measurementId: '3949', measurementValue: getInt(str.substring(0, 2))},
+        {measurementId: '3950', measurementValue: getMinsByMin(str.substring(2, 6))}
     ]
 }
 
 function getShockSetting (str) {
     return [
-        {measurementId: '3951', type: 'Shock Enable', measurementValue: getInt(str.substring(0, 2))},
-        {measurementId: '3952', type: 'Shock Threshold', measurementValue: getInt(str.substring(2, 6))}
+        {measurementId: '3951', measurementValue: getInt(str.substring(0, 2))},
+        {measurementId: '3952', measurementValue: getInt(str.substring(2, 6))}
     ]
 }
 
@@ -842,16 +892,8 @@ function getHardVersion (hardVersion) {
     return `${loraWANV2DataFormat(hardVersion.substring(0, 2))}.${loraWANV2DataFormat(hardVersion.substring(2, 4))}`
 }
 
-function getSecondsByInt (str) {
-    return getInt(str)
-}
-
 function getMinsByMin (str) {
     return getInt(str)
-}
-
-function getSecondsByMin (str) {
-    return getInt(str) * 60
 }
 
 function getSensorValue (str, dig) {
